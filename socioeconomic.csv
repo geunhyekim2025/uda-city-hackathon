@@ -1,11 +1,11 @@
 gridiv,name,type,frac_over65,frac_under5,ac_access,frac_outdoor_workers,deprivation_index
-1,AVL_6_212,refuge,0.10,0.09,0.45,0.30,0.40
-2,AVL_6_447,refuge,0.11,0.08,0.50,0.28,0.38
-3,AVL_6_229,refuge,0.10,0.09,0.42,0.32,0.42
-4,AVL_6_130,hotspot,0.07,0.13,0.08,0.62,0.82
-5,AVL_6_65,hotspot,0.08,0.12,0.10,0.60,0.80
-6,AVL_6_298,core,0.13,0.07,0.70,0.22,0.30
-7,AVL_6_306,hotspot,0.07,0.14,0.06,0.65,0.85
-8,AVL_6_310,core,0.14,0.06,0.72,0.20,0.28
-9,AVL_6_470,hotspot,0.08,0.13,0.07,0.63,0.83
-10,AVL_9,core,0.15,0.06,0.78,0.18,0.25
+1,Jade Gardens,refuge,0.10,0.09,0.45,0.30,0.40
+2,Serendib Rise,refuge,0.11,0.08,0.50,0.28,0.38
+3,Taman Melati,refuge,0.10,0.09,0.42,0.32,0.42
+4,Kampong Lama,hotspot,0.07,0.13,0.08,0.62,0.82
+5,Dhobi Lines,hotspot,0.08,0.12,0.10,0.60,0.80
+6,Lusitano Square,core,0.13,0.07,0.70,0.22,0.30
+7,Mlima Moto,hotspot,0.07,0.14,0.06,0.65,0.85
+8,Victoria Exchange,core,0.14,0.06,0.72,0.20,0.28
+9,Fuzhou Lanes,hotspot,0.08,0.13,0.07,0.63,0.83
+10,Zheng He Towers,core,0.15,0.06,0.78,0.18,0.25

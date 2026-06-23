@@ -4,7 +4,7 @@ description: Neighbourhood metadata for UDA-city — generated from uda-city.yml
   key for SUEWS outputs, socioeconomic.csv and the risk bridge.
 neighbourhoods:
 - gridiv: 1
-  name: AVL_6_212
+  name: Jade Gardens
   type: refuge
   type_description: greener low-density periphery (more vegetation, water access)
   morphology:
@@ -23,7 +23,7 @@ neighbourhoods:
     day: 80.0
     night: 100.0
 - gridiv: 2
-  name: AVL_6_447
+  name: Serendib Rise
   type: refuge
   type_description: greener low-density periphery (more vegetation, water access)
   morphology:
@@ -42,7 +42,7 @@ neighbourhoods:
     day: 80.0
     night: 100.0
 - gridiv: 3
-  name: AVL_6_229
+  name: Taman Melati
   type: refuge
   type_description: greener low-density periphery (more vegetation, water access)
   morphology:
@@ -61,7 +61,7 @@ neighbourhoods:
     day: 80.0
     night: 100.0
 - gridiv: 4
-  name: AVL_6_130
+  name: Kampong Lama
   type: hotspot
   type_description: dense low-rise informal settlement (barren, residential-heavy)
   morphology:
@@ -80,7 +80,7 @@ neighbourhoods:
     day: 300.0
     night: 400.0
 - gridiv: 5
-  name: AVL_6_65
+  name: Dhobi Lines
   type: hotspot
   type_description: dense low-rise informal settlement (barren, residential-heavy)
   morphology:
@@ -99,7 +99,7 @@ neighbourhoods:
     day: 300.0
     night: 400.0
 - gridiv: 6
-  name: AVL_6_298
+  name: Lusitano Square
   type: core
   type_description: formal mid/high-rise centre (moderate greening, daytime influx)
   morphology:
@@ -118,7 +118,7 @@ neighbourhoods:
     day: 250.0
     night: 130.0
 - gridiv: 7
-  name: AVL_6_306
+  name: Mlima Moto
   type: hotspot
   type_description: dense low-rise informal settlement (barren, residential-heavy)
   morphology:
@@ -137,7 +137,7 @@ neighbourhoods:
     day: 300.0
     night: 400.0
 - gridiv: 8
-  name: AVL_6_310
+  name: Victoria Exchange
   type: core
   type_description: formal mid/high-rise centre (moderate greening, daytime influx)
   morphology:
@@ -156,7 +156,7 @@ neighbourhoods:
     day: 250.0
     night: 130.0
 - gridiv: 9
-  name: AVL_6_470
+  name: Fuzhou Lanes
   type: hotspot
   type_description: dense low-rise informal settlement (barren, residential-heavy)
   morphology:
@@ -175,7 +175,7 @@ neighbourhoods:
     day: 300.0
     night: 400.0
 - gridiv: 10
-  name: AVL_9
+  name: Zheng He Towers
   type: core
   type_description: formal mid/high-rise centre (moderate greening, daytime influx)
   morphology:

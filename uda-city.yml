@@ -2,15 +2,13 @@
 # + localisation (scripts/localise_city.py): 6.93N 79.86E, UTC+05:30,
 # no DST; NARP radiation + classic OHM storage heat (laptop-runnable,
 # no SPARTACUS); forcing -> present hot-humid scenario (see scenarios.yml).
-name: UDA-city (10-form hot-humid, single-layer)
-description: 'SUEWS-Next hackathon synthetic city: 10 morphologically-varied neighbourhoods
-  (9 AVL_6_* + AVL_9) with a hot-humid land-cover skin and per-neighbourhood population.
-  Building morphology fixed from the source forms (z0/zd via Macdonald); vegetation/water/bare-soil
-  carved from the non-building budget by hotspot/refuge typology; population density
-  (people/ha, day/night) representative for a low-income tropical city (issue #9).
-  Anthropogenic-heat QF method is off, so population is exposure data not model heat;
-  vegetation physiology still needs tropical tuning under science review. Forcing
-  is a separate issue (#21).'
+name: UDA-city (10-neighbourhood, hot-humid, single-layer)
+description: 'SUEWS Community Hackathon synthetic city: 10 morphologically-varied, named
+  neighbourhoods spanning refuge, core and hotspot archetypes, with a hot-humid land-cover
+  skin and per-neighbourhood population. Building morphology drives z0/zd via Macdonald;
+  vegetation, water and bare soil are carved from the non-building budget by archetype;
+  population density (people/ha, day/night) is representative for a low-income tropical city.
+  Anthropogenic-heat QF is off, so population is exposure data, not model heat.'
 schema_version: '2026.5'
 model:
   control:
@@ -74,7 +72,7 @@ model:
       same_emissivity_roof:
         value: 0
 sites:
-- name: AVL_6_212
+- name: Jade Gardens
   gridiv: 1
   properties:
     lat:
@@ -3507,7 +3505,7 @@ sites:
     - 0.0
     - 0.0
     - 0.0
-- name: AVL_6_447
+- name: Serendib Rise
   gridiv: 2
   properties:
     lat:
@@ -6940,7 +6938,7 @@ sites:
     - 0.0
     - 0.0
     - 0.0
-- name: AVL_6_229
+- name: Taman Melati
   gridiv: 3
   properties:
     lat:
@@ -10373,7 +10371,7 @@ sites:
     - 0.0
     - 0.0
     - 0.0
-- name: AVL_6_130
+- name: Kampong Lama
   gridiv: 4
   properties:
     lat:
@@ -13806,7 +13804,7 @@ sites:
     - 0.0
     - 0.0
     - 0.0
-- name: AVL_6_65
+- name: Dhobi Lines
   gridiv: 5
   properties:
     lat:
@@ -17239,7 +17237,7 @@ sites:
     - 0.0
     - 0.0
     - 0.0
-- name: AVL_6_298
+- name: Lusitano Square
   gridiv: 6
   properties:
     lat:
@@ -20672,7 +20670,7 @@ sites:
     - 0.0
     - 0.0
     - 0.0
-- name: AVL_6_306
+- name: Mlima Moto
   gridiv: 7
   properties:
     lat:
@@ -24105,7 +24103,7 @@ sites:
     - 0.0
     - 0.0
     - 0.0
-- name: AVL_6_310
+- name: Victoria Exchange
   gridiv: 8
   properties:
     lat:
@@ -27538,7 +27536,7 @@ sites:
     - 0.0
     - 0.0
     - 0.0
-- name: AVL_6_470
+- name: Fuzhou Lanes
   gridiv: 9
   properties:
     lat:
@@ -30971,7 +30969,7 @@ sites:
     - 0.0
     - 0.0
     - 0.0
-- name: AVL_9
+- name: Zheng He Towers
   gridiv: 10
   properties:
     lat:
