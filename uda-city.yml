@@ -1,7 +1,7 @@
-# UDA-city hot-humid re-skin (scripts/reskin_landcover.py)
-# + localisation (scripts/localise_city.py): 6.93N 79.86E, UTC+05:30,
-# no DST; NARP radiation + classic OHM storage heat (laptop-runnable,
-# no SPARTACUS); forcing -> present hot-humid scenario (see scenarios.yml).
+# UDA-city — SUEWS Community Hackathon synthetic city (10 neighbourhoods).
+# Locale 6.93N 79.86E, UTC+05:30, no DST. NARP radiation + classic OHM storage
+# heat, single-layer and laptop-runnable. Forcing -> present hot-humid scenario
+# (see scenarios.yml). Start from README.md and agent_manifest.yml.
 name: UDA-city (10-neighbourhood, hot-humid, single-layer)
 description: 'SUEWS Community Hackathon synthetic city: 10 morphologically-varied, named
   neighbourhoods spanning refuge, core and hotspot archetypes, with a hot-humid land-cover
