@@ -27,3 +27,6 @@ SuPy.log
 
 # Session handoff / brainstorm notes (private, see PER guidance)
 .context/
+
+# pytest
+.pytest_cache/
