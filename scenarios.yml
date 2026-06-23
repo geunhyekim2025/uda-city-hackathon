@@ -1,0 +1,61 @@
+# Forcing scenario manifest for UDA-city (issue #21).
+#
+# Two comparable hot-humid forcing scenarios drive the SAME city
+# (uda-city.yml, 10 neighbourhoods). The canonical config's
+# model.control.forcing already points at the present scenario, so a naive
+# load runs present-day; switch to the future file (same shape, same window)
+# to run the warming scenario.
+#
+# Build:  scripts/fetch_era5_forcing.py  -> scripts/build_forcing.py
+# Format: SUEWS met (24 columns, hourly, period-ending, local standard time).
+
+location:
+  description: >-
+    Coastal, lower-income, hot-humid South Asian setting (Colombo-like). The
+    city is synthetic; this point supplies a climate, not an identity.
+  latitude: 6.93
+  longitude: 79.86
+  timezone_utc_offset_hours: 5.5   # UTC+05:30, no daylight saving
+  era5_grid_point: {latitude: 7.00, longitude: 79.75}  # CDS snap to 0.25-deg grid
+
+common:
+  source: >-
+    ERA5 reanalysis hourly point timeseries, Copernicus Climate Data Store,
+    dataset reanalysis-era5-single-levels-timeseries.
+  window_local: "2024-03-02 01:00 .. 2024-06-01 00:00"   # 91 days, hourly
+  note_spinup: >-
+    March is intended as model spin-up; the April-May pre-monsoon hot season
+    is the analysis window.
+  timestep_seconds: 3600
+  variables: [Tair, RH, U, pres, kdown, ldown, rain]
+  qf: "0.0 (emissions method 0: QF read from forcing; 0 = documented QF-off baseline)"
+
+scenarios:
+  - id: present_hot_humid
+    title: Present hot-humid hot season
+    forcing_file: forcing/present_hot_humid/UDA_2024_data_60.txt
+    perturbation: none (direct ERA5)
+    tair_range_c: [25.9, 33.0]
+    rh_mean_pct: 81
+
+  - id: future_hot_humid
+    title: Future hotter variant (+2.5 C pseudo-warming)
+    forcing_file: forcing/future_hot_humid/UDA_2024_data_60.txt
+    perturbation: >-
+      Pseudo-warming of the present file — scenario framing, NOT a downscaled
+      climate projection. Tair + 2.5 K uniformly (mid "+2-3 C" of the brief);
+      RH held constant (RH-preserving: specific humidity rises with temperature,
+      the thermodynamically expected and more dangerous case for humid heat);
+      ldown scaled by ((Tair+2.5+273.15)/(Tair+273.15))^4 for grey-body
+      consistency with the warmer atmosphere; kdown, wind, pressure, rain
+      unchanged.
+    tair_range_c: [28.4, 35.5]
+    rh_mean_pct: 81
+
+caveats:
+  - The future scenario is a uniform-delta pseudo-warming, not a downscaled
+    projection; it is a controlled "what if it were 2.5 C warmer" comparison.
+  - A single ERA5 grid point is coarse for a city; UDA-city is a synthetic
+    teaching dataset, not a forecast for any real place.
+  - All neighbourhoods share one forcing — inter-neighbourhood differences
+    come from morphology and land cover, not from differing meteorology.

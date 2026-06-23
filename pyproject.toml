@@ -1,0 +1,43 @@
+[project]
+name = "uda-city"
+version = "0.1.0"
+description = "SUEWS-Next hackathon synthetic city dataset (SUEWS-ready supy YAML)"
+requires-python = ">=3.11"
+dependencies = [
+    # uda-city.yml is schema 2026.5 and RUNS only under supy >= 2026.6.5;
+    # 2026.4.3 validates but aborts at runtime ("total SoilState > capacity").
+    "supy>=2026.6.5",
+    "pyyaml",
+]
+
+[dependency-groups]
+dev = [
+    "cdsapi>=0.7.7",
+    "netcdf4>=1.7.4",
+    "pyarrow>=20.0.0",
+    "pytest>=9.0.3",
+    "xarray>=2026.4.0",
+]
+
+# dev group: only needed to (re)build the ERA5 forcing package (#21); a plain
+# user who just runs the shipped uda-city.yml + forcing .txt needs neither.
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: end-to-end tests that run SUEWS live (deselect with -m 'not slow')",
+]
+
+# Pipeline (see README "Build / regenerate"):
+#   1. BUILD morphology base:  scripts/build_single_layer_city.py
+#   2. RE-SKIN land cover:     scripts/reskin_landcover.py
+#   3. LOCALISE + physics:     scripts/localise_city.py   (6.93N 79.86E; NARP + classic OHM)
+#   4. NEIGHBOURHOOD sidecar:  scripts/export_neighbourhoods.py
+#   - FORCING package:         scripts/fetch_era5_forcing.py -> scripts/build_forcing.py
+#   - DRIFT gate:              scripts/check_schema_drift.py   (fails on ignored/deprecated keys)
+#   - SMOKE:                   scripts/smoke_test.py           (asserts T2/QH finite)
+#
+# RUN / validate needs supy >= 2026.6.5 (2026.4.3 aborts at runtime). The
+# canonical city uses NARP radiation + classic OHM storage heat on disk:
+# laptop-runnable, no SPARTACUS. Earlier dynamic-OHM default (method 5) was
+# numerically unstable on these surfaces (storage heat -> NaN); see
+# scripts/localise_city.py.

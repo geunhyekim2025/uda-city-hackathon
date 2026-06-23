@@ -1,0 +1,79 @@
+# Agent manifest for UDA-city — the single file a coding agent (or the
+# suews-agent) should read first to operate this dataset without guessing.
+# Everything below is repo-relative.
+
+dataset:
+  name: UDA-city
+  what: >-
+    A synthetic, rapidly-urbanising, heat-vulnerable city in a lower-income,
+    hot-humid setting. 10 morphologically-varied neighbourhoods, one shared
+    SUEWS/supy config. Synthetic — supplies a realistic climate and city
+    structure, not a real place.
+  requires: "supy >= 2026.6.5 (2026.4.3 aborts at runtime)"
+
+canonical_config: uda-city.yml   # 10 sites; load this directly
+physics_note: >-
+  NARP radiation + classic OHM storage heat, baked on disk — laptop-runnable,
+  no SPARTACUS, no runtime swap. Do not switch storage_heat to the dynamic-OHM
+  method (5): it diverges to NaN on these surfaces.
+
+neighbourhoods:
+  sidecar: neighbourhoods.yml     # generated; gridiv -> name, type, morphology, population
+  join_key: gridiv                # stable 1..10, ascending building density
+  types: [refuge, core, hotspot]
+
+scenarios:
+  manifest: scenarios.yml
+  present:
+    id: present_hot_humid
+    forcing: forcing/present_hot_humid/UDA_2024_data_60.txt   # config default
+  future:
+    id: future_hot_humid
+    forcing: forcing/future_hot_humid/UDA_2024_data_60.txt    # +2.5K pseudo-warming
+  how_to_switch: >-
+    The config points at the present file. To run the future scenario, load
+    uda-city.yml then update the forcing to the future file before running.
+
+risk_bridge:
+  doc: risk_bridge.md
+  script: risk_bridge.py
+  socioeconomic_inputs: socioeconomic.csv
+  produces: per-neighbourhood dangerous-heat hours + hazard/exposure/vulnerability + risk_index + rank
+
+outputs_layout:
+  suews: outputs/suews/            # raw SUEWS run output
+  derived: outputs/derived/        # risk tables, hazard layers (CSV)
+  pages: docs/                     # GitHub Pages site (the judged showcase)
+  transcripts: transcripts/        # exported AI/suews-agent sessions
+
+key_output_variables:
+  T2: 2 m air temperature (deg C) — the hazard driver
+  QH: sensible heat flux (W m-2)
+  QE: latent heat flux (W m-2)
+  QN: net all-wave radiation (W m-2)
+  Tsurf: bulk surface temperature (deg C)
+
+example_prompts:
+  - "Run the present hot-humid scenario for all 10 neighbourhoods and report
+     dangerous-heat hours (hourly-mean T2 > 35 C) per neighbourhood."
+  - "Run the future scenario and tabulate the change in dangerous-heat hours
+     versus present, per neighbourhood."
+  - "Apply risk_bridge.py to the present scenario and give me the ranked
+     risk table. Explain why the hottest neighbourhood is not the
+     highest-risk one."
+  - "Pick a defensible dangerous-heat threshold for a humid tropical city,
+     justify it against a dry-bulb 35 C default, and re-run the bridge."
+  - "Summarise where the SUEWS-to-risk bridge is scientifically strong and
+     where it breaks, citing the caveats in risk_bridge.md."
+
+verification:
+  smoke: ".venv/bin/python scripts/smoke_test.py"          # asserts T2/QH finite
+  drift_gate: ".venv/bin/python scripts/check_schema_drift.py"
+  tests: ".venv/bin/python -m pytest -m 'not slow'"
+
+citation:
+  must_cite_suews: true
+  papers:
+    - "Jarvi, L., Grimmond, C.S.B. & Christen, A. (2011). The Surface Urban Energy and Water Balance Scheme (SUEWS): Evaluation in Los Angeles and Vancouver. Journal of Hydrology, 411(3-4), 219-237. doi:10.1016/j.jhydrol.2011.10.001"
+    - "Ward, H.C., Kotthaus, S., Jarvi, L. & Grimmond, C.S.B. (2016). Surface Urban Energy and Water Balance Scheme (SUEWS): Development and evaluation at two UK sites. Urban Climate, 18, 1-32. doi:10.1016/j.uclim.2016.05.001"
+  version_guidance: "https://docs.suews.io/stable/#how-to-cite-suews"
