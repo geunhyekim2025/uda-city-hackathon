@@ -23,6 +23,7 @@ warnings.simplefilter("ignore")
 ROOT = Path(__file__).resolve().parents[1]; sys.path.insert(0, str(ROOT))
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np, pandas as pd, yaml
 from supy.suews_sim import SUEWSSimulation
 import risk_bridge as rb
@@ -168,21 +169,34 @@ def _figures(opt, B, C, D, slope, intercept, r2):
     ax.legend(frameon=False); ax.grid(alpha=.25, axis="y")
     fig.savefig(FIGS/"fig13_vulnerable.png"); plt.close(fig)
 
-    # FIG 14 - roughness -> heat regression
-    fig, ax = plt.subplots(figsize=(8, 5.2))
+    # FIG 14 - roughness -> heat regression (leader-line labels; boxed legend)
+    Di = D.set_index("name")
+    fig, ax = plt.subplots(figsize=(8.8, 5.6))
     for _, r in D.iterrows():
         ax.scatter(r.lambda_f, r.dangerous_hours, s=200, color=TCOL[r.type], edgecolor="k", lw=.7, zorder=3)
-        ax.annotate(r["name"], (r.lambda_f, r.dangerous_hours), fontsize=7.5,
-                    xytext=(4,4), textcoords="offset points")
     xs = np.linspace(D.lambda_f.min(), D.lambda_f.max(), 100)
-    ax.plot(xs, slope*np.log10(xs)+intercept, "--", color="#444",
-            label=f"log-fit  R$^2$ = {r2:.2f}")
+    ax.plot(xs, slope*np.log10(xs)+intercept, "--", color="#444")
     ax.set_xscale("log")
+    lab = {"Jade Gardens": (8, 2, "left", 0), "Taman Melati": (8, -1, "left", 0),
+           "Kampong Lama": (9, 2, "left", 0), "Fuzhou Lanes": (9, 3, "left", 0),
+           "Serendib Rise": (-9, 2, "right", 1), "Dhobi Lines": (9, 9, "left", 1),
+           "Lusitano Square": (2, 15, "center", 1), "Victoria Exchange": (-4, -16, "right", 1),
+           "Zheng He Towers": (8, -15, "left", 1), "Mlima Moto": (-9, 7, "right", 1)}
+    for n, (dx, dy, ha, lead) in lab.items():
+        r = Di.loc[n]
+        ax.annotate(n, (r.lambda_f, r.dangerous_hours), xytext=(dx, dy), textcoords="offset points",
+                    fontsize=8.3, ha=ha, va="center",
+                    arrowprops=(dict(arrowstyle="-", color="#9aa3ab", lw=.7) if lead else None))
+    handles = [Line2D([], [], ls="--", color="#444", label=f"log-fit  R$^2$ = {r2:.2f}")]
+    for t in ("refuge", "core", "hotspot"):
+        handles.append(Line2D([], [], marker="o", color="w", markerfacecolor=TCOL[t], markeredgecolor="k",
+                              markersize=9, label=t.capitalize()))
+    leg = ax.legend(handles=handles, loc="upper right", frameon=True, fontsize=9)
+    leg.get_frame().set_edgecolor("#9aa3ab"); leg.get_frame().set_linewidth(1.0)
     ax.set_xlabel("frontal-area density  $\\lambda_f$  (roughness, log scale)")
-    ax.set_ylabel("dangerous-heat hours (T2 > 35 C)")
+    ax.set_ylabel("dangerous-heat hours (above 35 C)")
     ax.set_title("Smoother neighbourhoods are hotter: roughness -> mixing -> heat")
-    for t,c in TCOL.items(): ax.scatter([],[],color=c,label=t,edgecolor="k")
-    ax.legend(frameon=False); ax.grid(alpha=.25, which="both")
+    ax.set_ylim(-6, 70); ax.grid(alpha=.25, which="both")
     fig.savefig(FIGS/"fig14_roughness.png"); plt.close(fig)
 
 
