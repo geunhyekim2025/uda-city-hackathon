@@ -33,7 +33,9 @@ uv pip install --python .venv "supy>=2026.6.5" pyyaml matplotlib pandas
 ```
 
 Deterministic. Present / future dangerous-heat-hour totals: **242 / 1861**;
-intervention reductions: **−60 / −65 / −73 %**.
+intervention reductions (present): **−60 / −65 / −73 %**. Under the +2.5 °C
+future the same intervention offsets only **36–43 %** of the warming-driven rise
+— adaptation helps but does not erase a hotter climate (`adapt and mitigate`).
 
 ## Method (one paragraph)
 

@@ -229,6 +229,22 @@
     dangerous heat avoided), not by a relative index designed to always keep someone at 1.0.</strong>
   </div>
 
+  <h3>Does adaptation offset the +2.5&nbsp;°C future? Partly — not nearly enough.</h3>
+  <p class="lede">The decisive question for planning: if we deploy cool roofs + greening <em>and</em> the
+     climate warms +2.5&nbsp;°C, where do the three hotspots land?</p>
+  <figure>
+    <img src="figs/fig7_future_intervention.png" alt="For each treated hotspot, three bars: present today, the much taller +2.5°C future with no action, and a shorter but still-tall future-with-adaptation bar — adaptation removes only 36–43% of the warming-driven increase.">
+    <figcaption>Present (today) vs the +2.5&nbsp;°C future with no action vs the future with cool roofs +
+      greening. Adaptation removes only <strong>36–43%</strong> of the warming-driven rise in dangerous
+      hours — and the adapted future still sits far above today.</figcaption>
+  </figure>
+  <p>Cool roofs + greening are powerful, but they are <strong>not a substitute for limiting warming</strong>.
+     On the worst settlement, Kampong Lama, dangerous-heat hours go <span class="stat">42 (today) → 249
+     (+2.5&nbsp;°C, no action) → 173 (+2.5&nbsp;°C with adaptation)</span>: the measures claw back ~37% of the
+     increase, yet the adapted-future level is still <strong>four times</strong> today's. The honest planning
+     message: <strong>adapt <em>and</em> mitigate</strong> — local cooling buys real relief but cannot
+     cancel the heat a hotter climate delivers.</p>
+
   <!-- 5 -->
   <h2 id="holds"><span class="num">5.</span>&nbsp; Where this bridge holds — and where it breaks</h2>
   <p class="lede">The honest part. This pipeline is a decision aid, not an oracle.</p>
@@ -292,7 +308,12 @@
       <li><strong>Risk:</strong> UNDRR-style <code>hazard × exposure × vulnerability</code>, each min–max
         scaled to 0–1 and combined as a geometric mean (per <code>risk_bridge.py</code>).</li>
       <li><strong>Intervention:</strong> roof albedo 0.20→0.60, pavement 0.20→0.40; grass +0.10 and trees
-        +0.07 of land cover (from paved/bare), on gridiv 4/5/9 only. Config validated before running.</li>
+        +0.07 of land cover (from paved/bare), on gridiv 4/5/9 only. Config validated before running. The
+        same intervention is also run under the +2.5&nbsp;°C future (four scenarios in total).</li>
+      <li><strong>Anthropogenic heat (Q<sub>F</sub>):</strong> held <em>off</em> in the baseline (dataset
+        default, <code>emissions = 0</code>) — population feeds exposure/vulnerability, not model heat. We
+        did not vary it; enabling it would raise the dense settlements' hazard further (they would emit
+        most), so our hotspot risk is, if anything, conservative.</li>
       <li><strong>Source &amp; data:</strong> config <code>uda-city.yml</code>, bridge
         <code>risk_bridge.py</code> / caveats <code>risk_bridge.md</code>, scenario
         <code>uda-city-intervention.yml</code> — all in this repository. UDA-city is

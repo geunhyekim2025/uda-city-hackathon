@@ -80,12 +80,14 @@ def main():
     neigh = rb.load_neighbourhoods(ROOT / "neighbourhoods.yml")
     socio = pd.read_csv(ROOT / "socioeconomic.csv")
 
-    print("[1/3] present scenario ...")
+    print("[1/4] present scenario ...")
     res_p = run("uda-city.yml")
-    print("[2/3] +2.5 K future scenario ...")
+    print("[2/4] +2.5 K future scenario ...")
     res_f = run("uda-city.yml", "forcing/future_hot_humid/UDA_2024_data_60.txt")
-    print("[3/3] cool-roof + greening intervention ...")
+    print("[3/4] cool-roof + greening intervention (present) ...")
     res_i = run("uda-city-intervention.yml")
+    print("[4/4] intervention under +2.5 K future ...")
+    res_if = run("uda-city-intervention.yml", "forcing/future_hot_humid/UDA_2024_data_60.txt")
 
     P = rb.build_risk(res_p, neigh, socio).set_index("gridiv")
     F = rb.build_risk(res_f, neigh, socio).set_index("gridiv")
@@ -118,9 +120,21 @@ def main():
     iv["rank_base"], iv["rank_intv"] = P["risk_rank"], I["risk_rank"]
     iv.reset_index().to_csv(DERIVED / "risk_intervention_vs_baseline.csv", index=False)
 
+    # intervention under future: does cooling offset +2.5 K? (treated grids 4/5/9)
+    IFh = rb.build_risk(res_if, neigh, socio).set_index("gridiv")["dangerous_heat_hours"]
+    treated = [4, 5, 9]
+    off = pd.DataFrame({"name": P["name"], "present_base": P["dangerous_heat_hours"],
+                        "future_base": F["dangerous_heat_hours"], "future_intv": IFh}).loc[treated]
+    off["warming_add"] = off.future_base - off.present_base
+    off["intv_cut_future"] = off.future_base - off.future_intv
+    off["offset_pct"] = (off.intv_cut_future / off.warming_add * 100).round(0)
+    off.reset_index().to_csv(DERIVED / "intervention_under_future.csv", index=False)
+
     print(f"    present dangerous-hours total: {int(P['dangerous_heat_hours'].sum())}; "
-          f"future: {int(F['dangerous_heat_hours'].sum())}")
+          f"future: {int(F['dangerous_heat_hours'].sum())}; "
+          f"future+action offsets {off.offset_pct.min():.0f}-{off.offset_pct.max():.0f}% of warming")
     _figures(P.reset_index(), fut.reset_index(), H.reset_index(), iv.reset_index())
+    _fig7(off.reset_index())
     print(f"done -> {DERIVED}/*.csv and {FIGS}/fig1..6.png")
 
 
@@ -226,6 +240,25 @@ def _figures(P, F, H, I):
     fig.text(0.12, 0.02, "Schematic: UDA-city is synthetic - tiles grouped by neighbourhood type, not real coordinates.",
              fontsize=8, color="#6c757d")
     fig.savefig(FIGS / "fig6_map.png"); plt.close(fig)
+
+
+def _fig7(off):
+    # present baseline vs future (no action) vs future + intervention, treated grids
+    x = np.arange(len(off)); w = 0.27
+    fig, ax = plt.subplots(figsize=(8.5, 5.2))
+    ax.bar(x - w, off.present_base, w, label="Present (today)", color=SKY)
+    ax.bar(x, off.future_base, w, label="+2.5 C future, no action", color=VERM)
+    ax.bar(x + w, off.future_intv, w, label="+2.5 C future + cool-roof/greening", color=BLUE)
+    for xi, r in off.reset_index(drop=True).iterrows():
+        ax.text(xi, r.future_base + 4, f"offset {r.offset_pct:.0f}%", ha="center",
+                fontsize=9, color=VERM, fontweight="bold")
+        ax.annotate("", xy=(xi + w, r.future_intv), xytext=(xi, r.future_base),
+                    arrowprops=dict(arrowstyle="->", color="#444", lw=1.1))
+    ax.set_xticks(x); ax.set_xticklabels(off.name, fontsize=11)
+    ax.set_ylabel("dangerous-heat hours (T2 > 35 C)")
+    ax.set_title("Adaptation softens the +2.5 C future - but does not erase it")
+    ax.legend(frameon=False, fontsize=9.5); ax.grid(alpha=.25, axis="y")
+    fig.savefig(FIGS / "fig7_future_intervention.png"); plt.close(fig)
 
 
 if __name__ == "__main__":
