@@ -247,11 +247,12 @@
      cancel the heat a hotter climate delivers.</p>
 
   <div class="callout tldr">
-    <strong>Want the depth?</strong> Four further checks — <em>day vs night</em> risk and who's home,
-    an <em>absolute person-hours</em> metric that fixes the relative-index weakness, <em>which lever
-    cools more</em> (cool roofs beat greening — and why), whether you can <em>green your way out of
-    +2.5&nbsp;°C</em> (no), and a <em>robustness</em> sweep (the ranking is identical at 34/35/36&nbsp;°C
-    and to dropping any vulnerability proxy) — are on the
+    <strong>Want the depth?</strong> Nine further checks — <em>day vs night</em> risk and who's home, an
+    <em>absolute person-hours</em> metric, <em>which lever cools more</em> (cool roofs beat greening), the
+    <em>science-optimal package</em> (cool roof + cool pavement, drop the trees), a <em>headcount-of-harm</em>
+    vulnerable-person-hours metric, <em>heatwave events &amp; intensity</em> (where the refuges are worst on
+    hazard), whether you can <em>green your way out of +2.5&nbsp;°C</em> (no), the <em>roughness→heat</em>
+    relationship quantified (R²&nbsp;=&nbsp;0.73), and a <em>robustness</em> sweep — all on the
     <a href="deeper-analysis.html"><strong>Deeper analysis page →</strong></a>
   </div>
 
@@ -312,6 +313,10 @@
     <ul style="margin-top:0">
       <li><strong>Model:</strong> SUEWS via <code>supy 2026.6.5</code> — NARP net radiation + classic OHM
         storage heat (single-layer, laptop-runnable); 10 grids, present hot-humid forcing.</li>
+      <li><strong>Readiness &amp; provenance:</strong> the SUEWS <code>assess_readiness</code> check reports
+        <strong>zero assumed sample defaults</strong> — location, land cover and forcing are all
+        site-specific (not the bundled London sample). Deeper material/vegetation parameters inherit the
+        SUEWS-database values, expected for a synthetic city.</li>
       <li><strong>Hazard:</strong> dangerous-heat hours = hours with hourly-mean 2&nbsp;m air temperature
         (<code>T2</code>) above <code>35&nbsp;°C</code>, after a <code>14-day</code> spin-up. Humid variant:
         wet-bulb (Stull 2011) above 28&nbsp;°C from the model's own <code>T2</code>+<code>RH2</code>.</li>

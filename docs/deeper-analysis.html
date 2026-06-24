@@ -131,11 +131,77 @@
     it is structural.
   </div>
 
+  <h2><span class="num">6.</span> The science-optimal package: cool roof + cool <em>pavement</em></h2>
+  <p class="lede">Section 3 found greening (low-albedo trees, moisture-limited) slightly warms the air. So the
+     air-temperature-optimal package <strong>drops the trees</strong> and keeps the two reflective surfaces.</p>
+  <figure>
+    <img src="figs/fig12_optimal.png" alt="Roof+pavement (no trees) achieves fewer dangerous hours than roof+green, in both present and +2.5°C future, for all three hotspots.">
+    <figcaption>Cool roof + cool <strong>pavement</strong> (no trees) beats the roof+green package in both
+      present and future — e.g. Kampong Lama present 42 → <strong>11 h</strong> (optimal) vs 17 h (combined).</figcaption>
+  </figure>
+  <div class="callout key">
+    <strong>Evidence-led recommendation.</strong> For lowering <em>air temperature</em> here, reflective roofs
+    and pavements are the lever; the trees are not (for air temp). Keep trees for <em>shade and comfort</em>
+    (which <code>T2</code> can't see) — but don't count on them to cut the dangerous-hour count.
+  </div>
+
+  <h2><span class="num">7.</span> Headcount of harm — vulnerable person-hours</h2>
+  <p class="lede">Person-hours weighted by <em>who</em> is exposed: dangerous person-hours × the vulnerable
+     fraction (elderly, children, no-AC, outdoor workers, deprivation).</p>
+  <figure>
+    <img src="figs/fig13_vulnerable.png" alt="Vulnerable person-hours per hectare; the three informal hotspots dominate, far above refuges and cores.">
+    <figcaption>Vulnerable person-hours per hectare. The informal settlements dominate (Kampong Lama ~6,450) —
+      and the hot-but-empty refuges fall away once the vulnerable <em>fraction</em> (0.29 vs ~0.51) is applied.</figcaption>
+  </figure>
+  <div class="callout key">
+    <strong>Robust to the UNDRR framing.</strong> Splitting vulnerability into <em>sensitivity</em> and a
+    separate <em>adaptive-capacity</em> pillar (a 4-pillar risk = hazard × exposure × sensitivity ×
+    lack-of-capacity) gives the <strong>identical top-3</strong> (Kampong Lama, Dhobi Lines, Fuzhou Lanes).
+    The conclusion does not depend on how the socio-economic layer is assembled.
+  </div>
+
+  <h2><span class="num">8.</span> Heatwave events &amp; intensity — and a twist</h2>
+  <p class="lede">Health systems track <em>events</em>, not hour totals. We counted dangerous days, the longest
+     consecutive spell, multi-day heatwave events, and degree-hours (intensity × duration).</p>
+  <table>
+    <thead><tr><th>Neighbourhood</th><th>type</th><th>hot days</th><th>longest spell</th>
+      <th>heatwave events (≥3 d)</th><th>degree-hours</th></tr></thead>
+    <tbody>
+      <tr><td>Jade Gardens</td><td>refuge</td><td>22</td><td><strong>9</strong></td><td>3</td><td><strong>874</strong></td></tr>
+      <tr><td>Taman Melati</td><td>refuge</td><td>20</td><td>5</td><td>3</td><td>671</td></tr>
+      <tr><td>Kampong Lama</td><td>hotspot</td><td>18</td><td>3</td><td>1</td><td>458</td></tr>
+      <tr><td>Serendib Rise</td><td>refuge</td><td>15</td><td>4</td><td>1</td><td>346</td></tr>
+      <tr><td>Dhobi Lines</td><td>hotspot</td><td>12</td><td>3</td><td>1</td><td>264</td></tr>
+      <tr><td>Fuzhou Lanes</td><td>hotspot</td><td>10</td><td>2</td><td>0</td><td>213</td></tr>
+      <tr><td>cores (Lusitano/Victoria/Zheng)</td><td>core</td><td>2–3</td><td>1</td><td>0</td><td>5–57</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn">
+    <strong>The twist reinforces the headline.</strong> On pure <em>hazard intensity</em> — longest spell
+    (9 days) and degree-hours (874) — the leafy <strong>refuge</strong> Jade Gardens is the <em>worst</em>,
+    not the informal settlements. So the most <em>severe and sustained</em> heat is exactly where the
+    <em>fewest vulnerable people</em> live. Hottest ≠ highest-risk, seen a third way.
+  </div>
+
+  <h2><span class="num">9.</span> Why are smoother places hotter? Quantified</h2>
+  <p class="lede">The main story claims low roughness → weak mixing → trapped heat. Here is the number.</p>
+  <figure>
+    <img src="figs/fig14_roughness.png" alt="Scatter of dangerous-heat hours against frontal-area density on a log axis, with a downward log-fit line, R-squared 0.73.">
+    <figcaption>Dangerous-heat hours fall steeply with frontal-area density λ_f (roughness): a log-fit explains
+      <strong>R² = 0.73</strong> of the variation across all ten neighbourhoods (−31 hours per decade of λ_f).</figcaption>
+  </figure>
+  <div class="callout key">
+    <strong>Finding.</strong> The mechanism isn't hand-waving: roughness alone accounts for three-quarters of
+    the between-neighbourhood spread in dangerous-heat hours. Smooth, low-rise form traps near-surface heat;
+    rough, dense form ventilates it.
+  </div>
+
   <h2>Reproduce</h2>
-  <div class="repro"><code>.venv/bin/python scripts/extensions.py</code></div>
-  <p class="lede">Runs the day/night split, person-hours, the cool-roof/greening decomposition, the greening
-     dose under +2.5 °C, and the robustness sweep — writing <code>outputs/derived/ext_*.csv</code> and these
-     four figures.</p>
+  <div class="repro"><code>.venv/bin/python scripts/extensions.py    # day/night, person-hours, decomposition, dose, robustness
+.venv/bin/python scripts/extensions2.py   # optimal package, vulnerable person-hours, heatwave events, roughness fit</code></div>
+  <p class="lede">Write <code>outputs/derived/ext_*.csv</code> / <code>ext2_*.csv</code> and figures 8–14.
+     Model readiness was checked with SUEWS <code>assess_readiness</code>: <strong>0 assumed sample
+     defaults</strong> — location, land cover and forcing are all site-specific.</p>
 
   <a class="back" href="index.html">← back to the main story</a>
 
