@@ -60,6 +60,15 @@
   .methods{font-size:.9rem}
   .methods code{background:#eef2f6;padding:1px 6px;border-radius:5px}
   .methods a{color:var(--saf)}
+  .nav{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 4px;font-size:.86rem}
+  .nav a{color:var(--saf);text-decoration:none;border:1px solid var(--line);background:#fff;
+         padding:5px 11px;border-radius:999px}
+  .nav a:hover{background:#f3f8fc}
+  .repro{background:#0f1b26;color:#dfe8f0;border-radius:10px;padding:14px 16px;font-size:.84rem;
+         overflow-x:auto;margin:14px 0}
+  .repro code{background:none;color:#7fd1a8}
+  a.btn{display:inline-block;background:var(--saf);color:#fff;text-decoration:none;font-weight:600;
+        padding:9px 16px;border-radius:8px;font-size:.92rem}
   footer{color:var(--mut);font-size:.82rem;border-top:1px solid var(--line);margin-top:50px;padding-top:18px}
   code{background:#eef2f6;padding:1px 6px;border-radius:5px;font-size:.86em}
   @media(max-width:680px){.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}header h1{font-size:1.6rem}}
@@ -86,6 +95,17 @@
 
 <div class="wrap">
 
+  <nav class="nav">
+    <a href="#headline">1 · Hottest ≠ risk</a>
+    <a href="#table">2 · Risk table</a>
+    <a href="#future">3 · Humidity &amp; +2.5 °C</a>
+    <a href="#intervention">4 · Intervention</a>
+    <a href="#holds">5 · Holds / breaks</a>
+    <a href="#policy">6 · Policy</a>
+    <a href="#methods">7 · Methods</a>
+    <a href="#ai">8 · AI workflow</a>
+  </nav>
+
   <div class="callout tldr">
     <strong>In two sentences.</strong> In this hot-humid city, the <em>hottest</em> air is in the leafy,
     near-empty periphery — but the <em>danger to people</em> is concentrated in three dense informal
@@ -111,7 +131,7 @@
   </figure>
 
   <!-- 1 -->
-  <h2><span class="num">1.</span>&nbsp; Hottest ≠ highest-risk</h2>
+  <h2 id="headline"><span class="num">1.</span>&nbsp; Hottest ≠ highest-risk</h2>
   <p class="lede">Hazard and risk are different questions. One is about the air; the other is about the people in it.</p>
   <figure>
     <img src="figs/fig1_hottest_vs_risk.png" alt="Scatter of dangerous-heat hours versus risk index for the ten neighbourhoods, showing the hottest neighbourhood at the bottom of risk and the highest-risk neighbourhood only mid-range on heat.">
@@ -131,7 +151,7 @@
   </ul>
 
   <!-- 2 -->
-  <h2><span class="num">2.</span>&nbsp; The risk table</h2>
+  <h2 id="table"><span class="num">2.</span>&nbsp; The risk table</h2>
   <p class="lede">Risk = Hazard × Exposure × Vulnerability, each scored 0–1 across the ten neighbourhoods and
      combined as a (deliberately cautious) geometric mean — a near-zero in any one pillar pulls risk down.</p>
   <figure>
@@ -160,7 +180,7 @@
      heat-management issue, not a life-safety priority — <em>provided</em> they stay sparsely populated.</p>
 
   <!-- 3 -->
-  <h2><span class="num">3.</span>&nbsp; What humidity and a +2.5&nbsp;°C future change</h2>
+  <h2 id="future"><span class="num">3.</span>&nbsp; What humidity and a +2.5&nbsp;°C future change</h2>
 
   <h3>Humidity makes everywhere more dangerous — but doesn't change who's worst</h3>
   <p>A dry-bulb 35&nbsp;°C threshold understates danger in a city at ~81% humidity. Re-scoring the hazard with
@@ -188,7 +208,7 @@
      highest-risk settlements stay highest-risk."</p>
 
   <!-- 4 -->
-  <h2><span class="num">4.</span>&nbsp; A targeted intervention: cool roofs + street greening</h2>
+  <h2 id="intervention"><span class="num">4.</span>&nbsp; A targeted intervention: cool roofs + street greening</h2>
   <p class="lede">We tested one concrete action on the three highest-risk settlements: brighten the roofs and
      pavements (reflect more sun) and convert some paved/bare ground to grass and trees (add evaporative cooling).</p>
   <figure>
@@ -209,7 +229,7 @@
   </div>
 
   <!-- 5 -->
-  <h2><span class="num">5.</span>&nbsp; Where this bridge holds — and where it breaks</h2>
+  <h2 id="holds"><span class="num">5.</span>&nbsp; Where this bridge holds — and where it breaks</h2>
   <p class="lede">The honest part. This pipeline is a decision aid, not an oracle.</p>
   <div class="grid2">
     <div class="card holds">
@@ -244,7 +264,7 @@
   </div>
 
   <!-- Policy -->
-  <h2><span class="num">6.</span>&nbsp; So what should a city do?</h2>
+  <h2 id="policy"><span class="num">6.</span>&nbsp; So what should a city do?</h2>
   <div class="callout policy">
     <ul style="margin-top:0">
       <li><strong>Target the three informal settlements first.</strong> Kampong Lama, Dhobi Lines and Fuzhou
@@ -260,7 +280,7 @@
   </div>
 
   <!-- Methods -->
-  <h2><span class="num">7.</span>&nbsp; Methods &amp; reproducibility</h2>
+  <h2 id="methods"><span class="num">7.</span>&nbsp; Methods &amp; reproducibility</h2>
   <div class="callout methods">
     <ul style="margin-top:0">
       <li><strong>Model:</strong> SUEWS via <code>supy 2026.6.5</code> — NARP net radiation + classic OHM
@@ -279,13 +299,55 @@
         synthetic — read ranks, not absolute values.</li>
     </ul>
   </div>
+  <p class="lede">Reproduce every number and figure on this page with one command:</p>
+  <div class="repro"><code>uv venv --python 3.12 .venv<br>
+uv pip install --python .venv "supy&gt;=2026.6.5" pyyaml matplotlib pandas<br>
+.venv/bin/python scripts/reproduce.py</code></div>
+  <p class="lede" style="margin-top:6px">Deterministic — present / future dangerous-heat-hour totals
+     <strong>242 / 1861</strong>; intervention reductions <strong>−60 / −65 / −73%</strong>.</p>
+
+  <!-- 8 AI workflow -->
+  <h2 id="ai"><span class="num">8.</span>&nbsp; How AI built this — and where it cross-checked itself</h2>
+  <p class="lede">A SUEWS run is only as good as the scrutiny around it. The AI agent (driving
+     <code>supy</code> + the SUEWS validation tools) was used not to autocomplete answers but to
+     <em>catch its own mistakes</em>. The full log is in
+     <a href="https://github.com/geunhyekim2025/uda-city-hackathon/blob/main/transcripts/ai-collaboration.md"><code>transcripts/ai-collaboration.md</code></a>.</p>
+  <div class="grid2">
+    <div class="card holds">
+      <h4>Cross-checks that changed the answer</h4>
+      <ul>
+        <li><strong>Caught a saturating metric:</strong> apparent temperature at a 35&nbsp;°C threshold
+          flagged "danger" ~800&nbsp;h everywhere — useless. Fix: threshold each humid metric at its own
+          danger level (wet-bulb&nbsp;&gt;&nbsp;28&nbsp;°C).</li>
+        <li><strong>Exposed a scoring artefact:</strong> the relative risk index hid a 60% real
+          improvement — surfaced as a headline caveat, not buried.</li>
+        <li><strong>Verified the mechanism:</strong> the intervention's cooling was confirmed against the
+          surface energy balance (QN↓, QE↑, QH↓), not just asserted.</li>
+      </ul>
+    </div>
+    <div class="card breaks" style="border-left-color:var(--saf)">
+      <h4 style="color:var(--saf)">Guardrails in the workflow</h4>
+      <ul>
+        <li>Read the dataset's own <code>agent_manifest.yml</code> + <code>risk_bridge.md</code> before
+          running anything — no guessed parameters.</li>
+        <li>Ran <code>suews validate</code> (zero errors) <em>before</em> every long simulation.</li>
+        <li>Used the model's self-consistent 2&nbsp;m <code>T2</code>+<code>RH2</code> for humidity, not a
+          physically inconsistent splice of forcing RH.</li>
+        <li>Verified the live site end-to-end (every asset served) rather than assuming deployment.</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top:18px"><a class="btn" href="https://github.com/geunhyekim2025/uda-city-hackathon">View the full repository &amp; reproducible code →</a></p>
 
   <footer>
     Modelled with <strong>SUEWS</strong> (Surface Urban Energy &amp; Water Balance Scheme) via <code>supy</code>
     2026.6.5. Figures are colour-blind-safe (Okabe–Ito / cividis). Risk decomposition follows the UNDRR
     hazard × exposure × vulnerability framing; see <code>risk_bridge.md</code> for full assumptions.<br><br>
-    Please cite SUEWS: Järvi, Grimmond &amp; Christen (2011), <em>J. Hydrology</em> 411, 219–237; and
-    Ward, Kotthaus, Järvi &amp; Grimmond (2016), <em>Urban Climate</em> 18, 1–32.
+    Please cite SUEWS — run with <strong>supy 2026.6.5</strong>: Järvi, Grimmond &amp; Christen (2011),
+    <em>J. Hydrology</em> 411, 219–237; and Ward, Kotthaus, Järvi &amp; Grimmond (2016),
+    <em>Urban Climate</em> 18, 1–32. Version guidance:
+    <a href="https://docs.suews.io/stable/#how-to-cite-suews">docs.suews.io</a>.<br><br>
+    UDA-city is a synthetic hackathon dataset; the socio-economic layer is synthetic. Last updated 24 June 2026.
   </footer>
 
 </div>

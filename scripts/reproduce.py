@@ -1,0 +1,232 @@
+#!/usr/bin/env python
+"""Reproduce the UDA-city heat-risk analysis and all GitHub Pages figures.
+
+One entry point for the whole submission. It runs SUEWS (present, +2.5 K future,
+and the cool-roof + greening intervention), computes the risk tables, and writes
+every figure used on the site. Deterministic — same inputs reproduce the same
+numbers and figures.
+
+    .venv/bin/python scripts/reproduce.py
+
+Inputs (in the repo):   uda-city.yml, uda-city-intervention.yml,
+                        forcing/{present,future}_hot_humid/UDA_2024_data_60.txt,
+                        neighbourhoods.yml, socioeconomic.csv, risk_bridge.py
+Outputs:                outputs/derived/*.csv  and  docs/figs/fig1..6.png
+
+Hazard = hours with hourly-mean T2 > 35 C after a 14-day spin-up (risk_bridge
+defaults). Humid variant = wet-bulb (Stull 2011) > 28 C from the model's own
+T2 + RH2. Risk = UNDRR hazard x exposure x vulnerability, min-max scaled and
+combined as a geometric mean (risk_bridge.build_risk). SUEWS: NARP + classic OHM.
+"""
+from __future__ import annotations
+
+import sys
+import warnings
+from pathlib import Path
+
+warnings.simplefilter("ignore")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # repo root for risk_bridge
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib import cm, colors
+import numpy as np
+import pandas as pd
+
+from supy.suews_sim import SUEWSSimulation
+import risk_bridge as rb  # the hackathon's reference bridge — used verbatim
+
+ROOT = Path(__file__).resolve().parents[1]
+DERIVED = ROOT / "outputs" / "derived"
+FIGS = ROOT / "docs" / "figs"
+SPIN = rb.DEFAULT_SPINUP_DAYS  # 14 days
+DERIVED.mkdir(parents=True, exist_ok=True)
+FIGS.mkdir(parents=True, exist_ok=True)
+
+# --- Okabe-Ito colour-blind-safe palette + cividis sequential ramp ---
+BLUE, VERM, GREEN, ORANGE, SKY, GREY = (
+    "#0072B2", "#D55E00", "#009E73", "#E69F00", "#56B4E9", "#6c757d")
+TCOL = {"refuge": BLUE, "core": GREY, "hotspot": VERM}
+RISK_CMAP = plt.get_cmap("cividis")
+plt.rcParams.update({"font.size": 12, "axes.titlesize": 14, "axes.titleweight": "bold",
+                     "figure.dpi": 130, "savefig.bbox": "tight",
+                     "axes.spines.top": False, "axes.spines.right": False})
+
+
+# --------------------------------------------------------------------------- #
+# Humid-heat metrics (from the model's self-consistent 2 m state)
+# --------------------------------------------------------------------------- #
+def wet_bulb(T, RH):  # Stull (2011) empirical wet-bulb, deg C
+    return (T * np.arctan(0.151977 * np.sqrt(RH + 8.313659)) + np.arctan(T + RH)
+            - np.arctan(RH - 1.676331)
+            + 0.00391838 * RH ** 1.5 * np.arctan(0.023101 * RH) - 4.686035)
+
+
+def hours_over(series, thr):
+    s = series.iloc[SPIN * 288:]
+    return int((s.resample("h").mean() > thr).sum())
+
+
+def run(config, forcing=None):
+    sim = SUEWSSimulation(str(ROOT / config))
+    if forcing:
+        sim.update_forcing(str(ROOT / forcing))
+    sim.run()
+    return sim.results
+
+
+def main():
+    neigh = rb.load_neighbourhoods(ROOT / "neighbourhoods.yml")
+    socio = pd.read_csv(ROOT / "socioeconomic.csv")
+
+    print("[1/3] present scenario ...")
+    res_p = run("uda-city.yml")
+    print("[2/3] +2.5 K future scenario ...")
+    res_f = run("uda-city.yml", "forcing/future_hot_humid/UDA_2024_data_60.txt")
+    print("[3/3] cool-roof + greening intervention ...")
+    res_i = run("uda-city-intervention.yml")
+
+    P = rb.build_risk(res_p, neigh, socio).set_index("gridiv")
+    F = rb.build_risk(res_f, neigh, socio).set_index("gridiv")
+    I = rb.build_risk(res_i, neigh, socio).set_index("gridiv")
+
+    # present table
+    P.reset_index().to_csv(DERIVED / "risk_present.csv", index=False)
+
+    # future vs present
+    fut = P[["name", "type"]].copy()
+    fut["dry_hrs_pres"] = P["dangerous_heat_hours"]
+    fut["dry_hrs_fut"] = F["dangerous_heat_hours"]
+    fut["risk_pres"], fut["rank_pres"] = P["risk_index"], P["risk_rank"]
+    fut["risk_fut"], fut["rank_fut"] = F["risk_index"], F["risk_rank"]
+    fut.to_csv(DERIVED / "risk_future_vs_present.csv")
+
+    # humid metrics (present)
+    rows = {}
+    for g in res_p.index.get_level_values(0).unique():
+        d = res_p.loc[g]["SUEWS"]
+        rows[g] = dict(dry_hrs=hours_over(d["T2"], 35.0),
+                       WBT28_hrs=hours_over(wet_bulb(d["T2"], d["RH2"]), 28.0))
+    H = neigh.set_index("gridiv")[["name", "type"]].join(pd.DataFrame(rows).T)
+    H.to_csv(DERIVED / "risk_present_humid.csv")
+
+    # intervention vs baseline
+    iv = P[["name", "type"]].copy()
+    iv["hrs_base"], iv["hrs_intv"] = P["dangerous_heat_hours"], I["dangerous_heat_hours"]
+    iv["risk_base"], iv["risk_intv"] = P["risk_index"], I["risk_index"]
+    iv["rank_base"], iv["rank_intv"] = P["risk_rank"], I["risk_rank"]
+    iv.reset_index().to_csv(DERIVED / "risk_intervention_vs_baseline.csv", index=False)
+
+    print(f"    present dangerous-hours total: {int(P['dangerous_heat_hours'].sum())}; "
+          f"future: {int(F['dangerous_heat_hours'].sum())}")
+    _figures(P.reset_index(), fut.reset_index(), H.reset_index(), iv.reset_index())
+    print(f"done -> {DERIVED}/*.csv and {FIGS}/fig1..6.png")
+
+
+# --------------------------------------------------------------------------- #
+def _figures(P, F, H, I):
+    # FIG 1 — hottest != highest-risk
+    fig, ax = plt.subplots(figsize=(8, 5.5))
+    for _, r in P.iterrows():
+        ax.scatter(r.dangerous_heat_hours, r.risk_index, s=270, color=TCOL[r.type],
+                   edgecolor="k", lw=0.8, zorder=3, alpha=.92)
+        dx, dy = (-3, 0.05) if r["name"] == "Jade Gardens" else (2, 0.02)
+        ax.annotate(r["name"], (r.dangerous_heat_hours, r.risk_index), fontsize=9,
+                    xytext=(r.dangerous_heat_hours + dx, r.risk_index + dy))
+    for t in TCOL:
+        ax.scatter([], [], color=TCOL[t], label=t, edgecolor="k")
+    jg = P[P.name == "Jade Gardens"].iloc[0]
+    kl = P[P.name == "Kampong Lama"].iloc[0]
+    ax.annotate("HOTTEST\n(lowest risk)", (jg.dangerous_heat_hours, jg.risk_index),
+                xytext=(jg.dangerous_heat_hours - 9, 0.30), fontsize=10, color=BLUE,
+                fontweight="bold", ha="center", arrowprops=dict(arrowstyle="->", color=BLUE))
+    ax.annotate("HIGHEST RISK\n(only 3rd hottest)", (kl.dangerous_heat_hours, kl.risk_index),
+                xytext=(kl.dangerous_heat_hours - 6, 0.80), fontsize=10, color=VERM,
+                fontweight="bold", arrowprops=dict(arrowstyle="->", color=VERM))
+    ax.set_xlabel("Heat HAZARD  ->  dangerous-heat hours (T2 > 35 C)")
+    ax.set_ylabel("Heat RISK to people  (risk index, 0-1)")
+    ax.set_title("Where it's hottest is not where heat is most dangerous")
+    ax.legend(loc="center right", frameon=False); ax.grid(alpha=.25)
+    fig.savefig(FIGS / "fig1_hottest_vs_risk.png"); plt.close(fig)
+
+    # FIG 2 — pillars
+    Ps = P.sort_values("risk_index"); y = np.arange(len(Ps)); h = 0.26
+    fig, ax = plt.subplots(figsize=(9, 5.5))
+    ax.barh(y + h, Ps.hazard, h, label="Hazard (heat)", color=VERM)
+    ax.barh(y, Ps.exposure, h, label="Exposure (people)", color=ORANGE)
+    ax.barh(y - h, Ps.vulnerability, h, label="Vulnerability (coping)", color=BLUE)
+    ax.set_yticks(y); ax.set_yticklabels(Ps.name)
+    ax.set_xlabel("pillar score (0-1, scaled across the 10 neighbourhoods)")
+    ax.set_title("Risk = Hazard x Exposure x Vulnerability")
+    ax.legend(loc="lower right", frameon=False); ax.grid(alpha=.25, axis="x")
+    fig.savefig(FIGS / "fig2_pillars.png"); plt.close(fig)
+
+    # FIG 3 — present vs future
+    Fs = F.sort_values("dry_hrs_fut", ascending=False); x = np.arange(len(Fs)); w = 0.4
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.bar(x - w / 2, Fs.dry_hrs_pres, w, label="Present", color=SKY)
+    ax.bar(x + w / 2, Fs.dry_hrs_fut, w, label="Future (+2.5 C)", color=VERM)
+    ax.set_xticks(x); ax.set_xticklabels(Fs.name, rotation=40, ha="right", fontsize=9)
+    ax.set_ylabel("dangerous-heat hours (T2 > 35 C)")
+    ax.set_title("+2.5 C warming multiplies dangerous heat x7.7 - everywhere")
+    ax.legend(frameon=False); ax.grid(alpha=.25, axis="y")
+    fig.savefig(FIGS / "fig3_future.png"); plt.close(fig)
+
+    # FIG 4 — intervention
+    It = I[I.name.isin(["Kampong Lama", "Dhobi Lines", "Fuzhou Lanes"])]
+    x = np.arange(len(It)); w = 0.4
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.bar(x - w / 2, It.hrs_base, w, label="Baseline", color=VERM)
+    ax.bar(x + w / 2, It.hrs_intv, w, label="Cool-roof + greening", color=BLUE)
+    for xi, (hb, hi) in enumerate(zip(It.hrs_base, It.hrs_intv)):
+        ax.text(xi + w / 2, hi + 0.6, f"-{(hb - hi) / hb * 100:.0f}%", ha="center",
+                fontsize=10, color=BLUE, fontweight="bold")
+    ax.set_xticks(x); ax.set_xticklabels(It.name, fontsize=11)
+    ax.set_ylabel("dangerous-heat hours (T2 > 35 C)")
+    ax.set_title("Cool roofs + street greening cut dangerous heat 60-73 %")
+    ax.legend(frameon=False); ax.grid(alpha=.25, axis="y")
+    fig.savefig(FIGS / "fig4_intervention.png"); plt.close(fig)
+
+    # FIG 5 — humidity (dry-bulb vs wet-bulb)
+    Hs = H.sort_values("WBT28_hrs", ascending=False); x = np.arange(len(Hs)); w = 0.4
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.bar(x - w / 2, Hs.dry_hrs, w, label="Dry-bulb danger (T2 > 35 C)", color=SKY)
+    ax.bar(x + w / 2, Hs.WBT28_hrs, w, label="Humid danger (wet-bulb > 28 C)", color=VERM)
+    ax.set_xticks(x); ax.set_xticklabels(Hs.name, rotation=40, ha="right", fontsize=9)
+    ax.set_ylabel("dangerous-heat hours")
+    ax.set_title("Humidity reveals far more danger - and hits every neighbourhood")
+    ax.legend(frameon=False); ax.grid(alpha=.25, axis="y")
+    fig.savefig(FIGS / "fig5_humidity.png"); plt.close(fig)
+
+    # FIG 6 — schematic city risk map
+    order = ["refuge", "core", "hotspot"]
+    titles = {"refuge": "REFUGE\n(green periphery)", "core": "CORE\n(formal centre)",
+              "hotspot": "HOTSPOT\n(informal, dense)"}
+    norm = colors.Normalize(0, 1)
+    fig, ax = plt.subplots(figsize=(9, 6))
+    ax.set_xlim(0, 3); ax.set_ylim(-0.4, 4.6); ax.axis("off")
+    for col, t in enumerate(order):
+        rows = P[P.type == t].sort_values("risk_index", ascending=False).reset_index(drop=True)
+        ax.text(col + 0.5, 4.45, titles[t], ha="center", va="bottom", fontsize=10.5, fontweight="bold")
+        for i, r in rows.iterrows():
+            yb = 3.5 - i * 1.05
+            ax.add_patch(plt.Rectangle((col + 0.06, yb), 0.88, 0.92,
+                                       facecolor=RISK_CMAP(norm(r.risk_index)), edgecolor="k", lw=1))
+            txt = "white" if r.risk_index < 0.55 else "black"
+            mark = "  * hottest" if r["name"] == "Jade Gardens" else (
+                "  ^ top risk" if r["name"] == "Kampong Lama" else "")
+            ax.text(col + 0.5, yb + 0.62, r["name"] + mark, ha="center", va="center",
+                    fontsize=9, fontweight="bold", color=txt)
+            ax.text(col + 0.5, yb + 0.34, f"risk {r.risk_index:.2f} . {int(r.dangerous_heat_hours)} hot-hrs",
+                    ha="center", va="center", fontsize=8, color=txt)
+    sm = cm.ScalarMappable(norm=norm, cmap=RISK_CMAP); sm.set_array([])
+    fig.colorbar(sm, ax=ax, fraction=0.04, pad=0.02).set_label("heat RISK index (0-1)")
+    ax.set_title("UDA-city - heat risk by neighbourhood  (schematic)", pad=14)
+    fig.text(0.12, 0.02, "Schematic: UDA-city is synthetic - tiles grouped by neighbourhood type, not real coordinates.",
+             fontsize=8, color="#6c757d")
+    fig.savefig(FIGS / "fig6_map.png"); plt.close(fig)
+
+
+if __name__ == "__main__":
+    main()
