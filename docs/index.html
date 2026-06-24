@@ -379,17 +379,29 @@
 
   <!-- Policy -->
   <h2 id="policy"><span class="num">6.</span>&nbsp; So what should a city do?</h2>
+  <div class="kpis" style="margin:6px 0 18px;padding:0;max-width:none;grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><b>3 settlements</b><span>hold essentially all the people-risk — target these first</span></div>
+    <div class="kpi"><b>cool roofs first</b><span>reflective surfaces do 69–82% of the cooling; trees for shade</span></div>
+    <div class="kpi"><b>adapt + mitigate</b><span>local action offsets only 36–43% of +2.5&nbsp;°C</span></div>
+  </div>
   <div class="callout policy">
     <ul style="margin-top:0">
       <li><strong>Target the three informal settlements first.</strong> Kampong Lama, Dhobi Lines and Fuzhou
-        Lanes are where dangerous heat meets dense, vulnerable, under-protected populations — they hold
-        essentially all of the people-risk.</li>
-      <li><strong>Deploy cool roofs + street greening there.</strong> A low-cost, proven lever: 60–73% fewer
-        dangerous-heat hours in our runs, working through reflected sunlight and evaporative cooling.</li>
-      <li><strong>Plan for the future now.</strong> +2.5&nbsp;°C multiplies dangerous heat ~8-fold in the
-        <em>same</em> places — adaptation is not optional.</li>
-      <li><strong>Measure success in heat avoided, not in a relative score</strong>, and never read a "0"
-        risk for a sparsely-populated area as "safe."</li>
+        Lanes carry almost all the <em>vulnerable</em> person-hours of dangerous heat — Kampong Lama alone
+        ~<strong>6,400 per hectare</strong> versus under 1,500 in the hot-but-empty refuges. That is where heat
+        meets dense, under-protected people.</li>
+      <li><strong>Lead with cool roofs and cool pavements.</strong> Our lever-by-lever test shows reflective
+        surfaces deliver <strong>69–82%</strong> of the cooling on their own; add street trees for
+        <em>shade and comfort</em>, not as the air-temperature lever (here greening alone did not cool the air).</li>
+      <li><strong>Match the intervention to the clock.</strong> Dangerous heat is a <em>daytime</em> problem,
+        but the people present shift: cores fill with commuters by day, while the informal settlements hold
+        their vulnerable residents around the clock — so daytime shade/water/work-pauses and nighttime cooling
+        refuges serve different populations.</li>
+      <li><strong>Plan for the future now.</strong> +2.5&nbsp;°C lifts the <em>whole city above today's worst
+        case</em> (the coolest future neighbourhood, 77&nbsp;h, exceeds today's hottest, 62&nbsp;h), and local
+        measures offset only 36–43% of it — so <strong>adapt <em>and</em> mitigate</strong>.</li>
+      <li><strong>Measure success in heat avoided (absolute person-hours), not a relative score</strong>, and
+        never read a "0" risk for a sparsely-populated area as "safe."</li>
     </ul>
   </div>
 
@@ -415,9 +427,10 @@
         default, <code>emissions = 0</code>) — population feeds exposure/vulnerability, not model heat. We
         did not vary it; enabling it would raise the dense settlements' hazard further (they would emit
         most), so our hotspot risk is, if anything, conservative.</li>
-      <li><strong>Deeper analysis:</strong> <code>scripts/extensions.py</code> adds the day/night split,
-        person-hours, intervention decomposition, greening-dose and robustness sweep (see the
-        <a href="deeper-analysis.html">Deeper analysis page</a>).</li>
+      <li><strong>Deeper analysis:</strong> <code>scripts/extensions.py</code> (day/night split, person-hours,
+        intervention decomposition, greening-dose, robustness sweep) and <code>scripts/extensions2.py</code>
+        (science-optimal package, vulnerable person-hours, heatwave events, roughness fit R²=0.73) — all on the
+        <a href="deeper-analysis.html">Deeper analysis page</a>.</li>
       <li><strong>Source &amp; data:</strong> config <code>uda-city.yml</code>, bridge
         <code>risk_bridge.py</code> / caveats <code>risk_bridge.md</code>, scenario
         <code>uda-city-intervention.yml</code> — all in this repository. UDA-city is
