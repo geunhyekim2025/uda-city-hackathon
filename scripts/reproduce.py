@@ -31,6 +31,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import cm, colors
+from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
@@ -160,16 +161,23 @@ def _figures(P, F, H, I):
                         arrowprops=dict(arrowstyle="-", color="#9aa3ab", lw=0.8, shrinkA=2, shrinkB=4))
         else:
             ax.text(lx, ly, n, fontsize=9, ha=ha, va="center")
-    for t in TCOL:
-        ax.scatter([], [], color=TCOL[t], label=t, edgecolor="k")
-    ax.legend(loc="center right", frameon=False, bbox_to_anchor=(1.0, 0.62))
+    handles = [Line2D([], [], marker="o", color="w", markerfacecolor=BLUE, markeredgecolor="k",
+                      markersize=9, label="Refuge - leafy, low-density edge"),
+               Line2D([], [], marker="o", color="w", markerfacecolor=GREY, markeredgecolor="k",
+                      markersize=9, label="Core - formal high-rise centre"),
+               Line2D([], [], marker="o", color="w", markerfacecolor=VERM, markeredgecolor="k",
+                      markersize=9, label="Hotspot - dense informal settlement")]
+    leg = ax.legend(handles=handles, title="Neighbourhood type", loc="center right",
+                    bbox_to_anchor=(1.0, 0.55), frameon=True, fontsize=8.6, title_fontsize=9.5)
+    leg.get_frame().set_edgecolor("#9aa3ab"); leg.get_frame().set_linewidth(1.0)
+    leg.get_title().set_fontweight("bold")
     ax.annotate("HIGHEST RISK\n(only 3rd hottest)", (42, 1.0), xytext=(49, 0.85), fontsize=10,
                 color=VERM, fontweight="bold", ha="center",
                 arrowprops=dict(arrowstyle="->", color=VERM, shrinkB=6))
     ax.annotate("HOTTEST\n(lowest risk)", (62, 0.0), xytext=(53, 0.20), fontsize=10, color=BLUE,
                 fontweight="bold", ha="center", arrowprops=dict(arrowstyle="->", color=BLUE, shrinkB=6))
     ax.set_xlim(-3, 76); ax.set_ylim(-0.05, 1.10)
-    ax.set_xlabel("Heat HAZARD  ->  dangerous-heat hours (T2 > 35 C)")
+    ax.set_xlabel("Heat hazard  ->  hours of dangerous heat (air above 35 C)")
     ax.set_ylabel("Heat RISK to people  (risk index, 0-1)")
     ax.set_title("Where it's hottest is not where heat is most dangerous")
     ax.grid(alpha=.25)
