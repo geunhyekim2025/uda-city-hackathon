@@ -161,12 +161,13 @@ def _figures(P, F, H, I):
                         arrowprops=dict(arrowstyle="-", color="#9aa3ab", lw=0.8, shrinkA=2, shrinkB=4))
         else:
             ax.text(lx, ly, n, fontsize=9, ha=ha, va="center")
+    # labels follow the dataset's own neighbourhoods.yml 'type_description' field
     handles = [Line2D([], [], marker="o", color="w", markerfacecolor=BLUE, markeredgecolor="k",
-                      markersize=9, label="Refuge - leafy, low-density edge"),
+                      markersize=9, label="Refuge - greener, low-density edge"),
                Line2D([], [], marker="o", color="w", markerfacecolor=GREY, markeredgecolor="k",
-                      markersize=9, label="Core - formal high-rise centre"),
+                      markersize=9, label="Core - formal mid/high-rise centre"),
                Line2D([], [], marker="o", color="w", markerfacecolor=VERM, markeredgecolor="k",
-                      markersize=9, label="Hotspot - dense informal settlement")]
+                      markersize=9, label="Hotspot - dense low-rise informal settlement")]
     leg = ax.legend(handles=handles, title="Neighbourhood type", loc="center right",
                     bbox_to_anchor=(1.0, 0.55), frameon=True, fontsize=8.6, title_fontsize=9.5)
     leg.get_frame().set_edgecolor("#9aa3ab"); leg.get_frame().set_linewidth(1.0)
