@@ -184,16 +184,19 @@ def _figures(P, F, H, I):
     ax.grid(alpha=.25)
     fig.savefig(FIGS / "fig1_hottest_vs_risk.png"); plt.close(fig)
 
-    # FIG 2 — pillars
+    # FIG 2 — pillars (CB-safe distinct trio; legend outside; dataset-faithful labels)
     Ps = P.sort_values("risk_index"); y = np.arange(len(Ps)); h = 0.26
-    fig, ax = plt.subplots(figsize=(9, 5.5))
-    ax.barh(y + h, Ps.hazard, h, label="Hazard (heat)", color=VERM)
-    ax.barh(y, Ps.exposure, h, label="Exposure (people)", color=ORANGE)
-    ax.barh(y - h, Ps.vulnerability, h, label="Vulnerability (coping)", color=BLUE)
+    fig, ax = plt.subplots(figsize=(10.6, 5.6))
+    ax.barh(y + h, Ps.hazard, h, label="Hazard - dangerous-heat hours", color=VERM)
+    ax.barh(y, Ps.exposure, h, label="Exposure - daytime population", color=GREEN)
+    ax.barh(y - h, Ps.vulnerability, h, label="Vulnerability - ability to cope", color=BLUE)
     ax.set_yticks(y); ax.set_yticklabels(Ps.name)
     ax.set_xlabel("pillar score (0-1, scaled across the 10 neighbourhoods)")
     ax.set_title("Risk = Hazard x Exposure x Vulnerability")
-    ax.legend(loc="lower right", frameon=False); ax.grid(alpha=.25, axis="x")
+    leg = ax.legend(title="The three pillars of risk", loc="center left", bbox_to_anchor=(1.01, 0.5),
+                    frameon=True, fontsize=9, title_fontsize=9.5)
+    leg.get_frame().set_edgecolor("#9aa3ab"); leg.get_title().set_fontweight("bold")
+    ax.grid(alpha=.25, axis="x")
     fig.savefig(FIGS / "fig2_pillars.png"); plt.close(fig)
 
     # FIG 3 — present vs future
