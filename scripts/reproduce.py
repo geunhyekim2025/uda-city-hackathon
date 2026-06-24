@@ -218,11 +218,11 @@ def _figures(P, F, H, I):
     titles = {"refuge": "REFUGE\n(green periphery)", "core": "CORE\n(formal centre)",
               "hotspot": "HOTSPOT\n(informal, dense)"}
     norm = colors.Normalize(0, 1)
-    fig, ax = plt.subplots(figsize=(9, 6))
-    ax.set_xlim(0, 3); ax.set_ylim(-0.4, 4.6); ax.axis("off")
+    fig, ax = plt.subplots(figsize=(9, 6.4))
+    ax.set_xlim(0, 3); ax.set_ylim(-0.4, 5.4); ax.axis("off")
     for col, t in enumerate(order):
         rows = P[P.type == t].sort_values("risk_index", ascending=False).reset_index(drop=True)
-        ax.text(col + 0.5, 4.45, titles[t], ha="center", va="bottom", fontsize=10.5, fontweight="bold")
+        ax.text(col + 0.5, 4.5, titles[t], ha="center", va="bottom", fontsize=10.5, fontweight="bold")
         for i, r in rows.iterrows():
             yb = 3.5 - i * 1.05
             ax.add_patch(plt.Rectangle((col + 0.06, yb), 0.88, 0.92,
@@ -236,7 +236,7 @@ def _figures(P, F, H, I):
                     ha="center", va="center", fontsize=8, color=txt)
     sm = cm.ScalarMappable(norm=norm, cmap=RISK_CMAP); sm.set_array([])
     fig.colorbar(sm, ax=ax, fraction=0.04, pad=0.02).set_label("heat RISK index (0-1)")
-    ax.set_title("UDA-city - heat risk by neighbourhood  (schematic)", pad=14)
+    ax.set_title("UDA-city - heat risk by neighbourhood  (schematic)", pad=30, fontsize=15)
     fig.text(0.12, 0.02, "Schematic: UDA-city is synthetic - tiles grouped by neighbourhood type, not real coordinates.",
              fontsize=8, color="#6c757d")
     fig.savefig(FIGS / "fig6_map.png"); plt.close(fig)
