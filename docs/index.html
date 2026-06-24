@@ -262,6 +262,33 @@
      which is what cools the street. Dangerous-heat hours drop <span class="stat">42→17</span>
      (Kampong Lama, −60%), <span class="stat">26→9</span> (Dhobi Lines, −65%) and
      <span class="stat">22→6</span> (Fuzhou Lanes, −73%).</p>
+
+  <h3>Why these two levers — and which works best?</h3>
+  <p>SUEWS solves the surface <strong>energy balance</strong>, and two things dominate how hot the air gets:
+     the sunlight a surface <em>absorbs</em> (set by its <strong>albedo</strong> — how reflective it is) and
+     how much energy goes into <em>evaporating water</em> instead of heating the air (set by
+     <strong>vegetation</strong>). The hotspots are weak on exactly these — dark surfaces (albedo&nbsp;0.20),
+     barely any greenery (~5% vegetation), heavy paving — so cool roofs/pavements and street greening are the
+     two highest-leverage changes a city could make to an existing informal settlement <em>without demolition</em>.
+     (The intervention is <strong>our choice</strong> — the hackathon invites it — but it targets the model's
+     two biggest physical levers; it is not prescribed by the dataset.) We then tested each lever separately
+     in SUEWS:</p>
+  <table>
+    <thead><tr><th>Intervention (tested in SUEWS)</th><th>What we changed</th><th>Dangerous-hours change*</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Cool roofs + cool pavements</strong></td><td>albedo 0.20 → 0.60 (roofs) / 0.40 (pavements)</td><td class="stat" style="color:#0072B2;font-weight:700">−69 to −82% (best)</td></tr>
+      <tr><td>Street greening only</td><td>+ grass &amp; trees, less paving</td><td class="stat" style="color:#D55E00">+10 to +27% (slightly worse)</td></tr>
+      <tr><td>Both combined <em>(our package)</em></td><td>albedo ↑ <em>and</em> greening</td><td class="stat" style="font-weight:700">−60 to −73%</td></tr>
+    </tbody>
+  </table>
+  <p class="lede" style="margin-top:-4px">*across the three treated settlements (full method &amp; figures on the
+     <a href="deeper-analysis.html">Deeper analysis page</a>).</p>
+  <p><strong>The surprise:</strong> cool roofs do nearly all the cooling; <em>greening alone slightly raises</em>
+     air temperature here, because the dataset's evergreen trees are <strong>darker (albedo 0.14)</strong> than
+     the pavement they replace, and evaporation is water-limited. Trees still matter for <strong>shade and
+     comfort</strong> (which air temperature can't capture) — but for cutting the dangerous-hour count, the
+     reflective surfaces are the lever. The evidence-led optimum is therefore <strong>cool roofs + cool
+     pavements</strong>.</p>
   <div class="callout">
     <strong>A scoring caution worth shouting about.</strong> The <em>relative</em> risk index barely moves
     after this intervention — Kampong Lama stays pinned at 1.00 — even though its real danger fell 60%. That
@@ -274,7 +301,7 @@
   <p class="lede">The decisive question for planning: if we deploy cool roofs + greening <em>and</em> the
      climate warms +2.5&nbsp;°C, where do the three hotspots land?</p>
   <figure>
-    <img src="figs/fig7_future_intervention.png" alt="For each treated hotspot, three bars: present today, the much taller +2.5°C future with no action, and a shorter but still-tall future-with-adaptation bar — adaptation removes only 36–43% of the warming-driven increase.">
+    <img src="figs/fig7_future_intervention.png?v=2" alt="For each treated hotspot, three bars: present today, the much taller +2.5°C future with no action, and a shorter but still-tall future-with-adaptation bar — adaptation removes only 36–43% of the warming-driven increase.">
     <figcaption>Present (today) vs the +2.5&nbsp;°C future with no action vs the future with cool roofs +
       greening. Adaptation removes only <strong>36–43%</strong> of the warming-driven rise in dangerous
       hours — and the adapted future still sits far above today.</figcaption>
