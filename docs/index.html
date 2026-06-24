@@ -71,7 +71,22 @@
         padding:9px 16px;border-radius:8px;font-size:.92rem}
   footer{color:var(--mut);font-size:.82rem;border-top:1px solid var(--line);margin-top:50px;padding-top:18px}
   code{background:#eef2f6;padding:1px 6px;border-radius:5px;font-size:.86em}
-  @media(max-width:680px){.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}header h1{font-size:1.6rem}}
+  .kpis.sec{margin:6px 0 18px;padding:0;max-width:none;grid-template-columns:repeat(3,1fr)}
+  .framework{display:flex;flex-wrap:wrap;align-items:stretch;justify-content:center;gap:8px;margin:18px 0 4px}
+  .fw-card{flex:1 1 140px;min-width:128px;max-width:210px;border:2px solid var(--line);border-radius:12px;
+           padding:14px 10px;text-align:center;background:#fff}
+  .fw-ic{font-size:1.9rem;line-height:1}
+  .fw-t{font-weight:800;margin:7px 0 4px;font-size:1rem}
+  .fw-s{font-size:.76rem;color:var(--mut);line-height:1.35}
+  .fw-op{display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:var(--ink);min-width:16px}
+  .fw-haz{border-color:var(--haz)} .fw-haz .fw-t{color:var(--haz)}
+  .fw-exp{border-color:#009E73} .fw-exp .fw-t{color:#009E73}
+  .fw-vul{border-color:var(--saf)} .fw-vul .fw-t{color:var(--saf)}
+  .fw-risk{background:#22303f;border-color:#22303f} .fw-risk .fw-t{color:#fff} .fw-risk .fw-s{color:#cdd7e0}
+  @media(max-width:680px){.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}
+    .kpis.sec{grid-template-columns:1fr}header h1{font-size:1.6rem}
+    table{display:block;overflow-x:auto;white-space:nowrap}
+    .framework{flex-direction:column;align-items:stretch}.fw-card{max-width:none}.fw-op{transform:rotate(90deg)}}
 </style>
 </head>
 <body>
@@ -124,6 +139,25 @@
     vulnerable people — and here the two point in opposite directions.
   </div>
 
+  <h3>The idea in one line</h3>
+  <div class="framework">
+    <div class="fw-card fw-haz"><div class="fw-ic">🌡️</div><div class="fw-t">Hazard</div>
+      <div class="fw-s">how dangerous the heat is<br>(hours above 35 °C)</div></div>
+    <div class="fw-op">×</div>
+    <div class="fw-card fw-exp"><div class="fw-ic">👥</div><div class="fw-t">Exposure</div>
+      <div class="fw-s">how many people are there<br>(daytime population)</div></div>
+    <div class="fw-op">×</div>
+    <div class="fw-card fw-vul"><div class="fw-ic">🛡️</div><div class="fw-t">Vulnerability</div>
+      <div class="fw-s">how well people can cope<br>(age, AC, work, deprivation)</div></div>
+    <div class="fw-op">=</div>
+    <div class="fw-card fw-risk"><div class="fw-ic">⚠️</div><div class="fw-t">Risk</div>
+      <div class="fw-s">danger to people</div></div>
+  </div>
+  <p class="lede" style="margin-top:8px">Because the three are <strong>multiplied</strong>, a near-zero in
+     <em>any</em> one pillar pulls risk down — which is exactly why the hottest place is not automatically the
+     most dangerous. <span style="font-size:.85rem">(Pillar definitions follow the UNDRR framework, as
+     implemented in the dataset's <code>risk_bridge.md</code>.)</span></p>
+
   <h3>The city at a glance</h3>
   <figure>
     <img src="figs/fig6_map.png?v=2" alt="Schematic map of the ten UDA-city neighbourhoods grouped by type and shaded by heat-risk index; hotspots are brightest (highest risk), refuges and most cores are darkest (lowest risk).">
@@ -135,7 +169,7 @@
   <!-- 1 -->
   <h2 id="headline"><span class="num">1.</span>&nbsp; Hottest ≠ highest-risk</h2>
   <p class="lede">Hazard and risk are different questions. One is about the air; the other is about the people in it.</p>
-  <div class="kpis" style="margin:6px 0 18px;padding:0;max-width:none;grid-template-columns:repeat(3,1fr)">
+  <div class="kpis sec">
     <div class="kpi"><b>62 h → risk 0</b><span><strong>Jade Gardens</strong>: the hottest of all ten, yet the <em>lowest</em> risk</span></div>
     <div class="kpi"><b>#1 risk</b><span><strong>Kampong Lama</strong>: only the <em>3rd</em>-hottest, yet the most dangerous to people</span></div>
     <div class="kpi"><b>300 vs 80</b><span>people per hectare — exposure is what turns heat into risk</span></div>
@@ -171,7 +205,7 @@
       hazard but its exposure bar is zero, which collapses its risk.</figcaption>
   </figure>
   <table>
-    <thead><tr><th>Rank</th><th>Neighbourhood</th><th>Type</th><th>Danger hrs<br>(above 35°C)</th>
+    <thead><tr><th>Rank</th><th>Neighbourhood</th><th>Type</th><th>Danger hrs<br>(above 35&nbsp;°C)</th>
       <th>Hazard</th><th>Exposure</th><th>Vuln.</th><th>Risk index</th><th style="text-align:left">What it means</th></tr></thead>
     <tbody>
       <tr><td>1</td><td>Kampong Lama</td><td><span class="tag t-hotspot">hotspot</span></td><td class="stat">42</td><td class="stat" style="background:rgba(213,94,0,0.35);color:#1d2733">0.67</td><td class="stat" style="background:rgba(213,94,0,0.49);color:#1d2733">1.00</td><td class="stat" style="background:rgba(213,94,0,0.47);color:#1d2733">0.95</td><td class="stat" style="background:rgba(213,94,0,1.00);color:#fff;font-weight:700">1.00</td><td style="text-align:left;font-size:.86rem"><span style="color:#D55E00;font-weight:700">●</span> Act first — hot, crowded, few defences</td></tr>
@@ -200,7 +234,7 @@
   <h2 id="future"><span class="num">3.</span>&nbsp; What humidity and a +2.5&nbsp;°C future change</h2>
 
   <h3>Humidity makes everywhere more dangerous — but doesn't change who's worst</h3>
-  <div class="kpis" style="margin:6px 0 18px;padding:0;max-width:none;grid-template-columns:repeat(3,1fr)">
+  <div class="kpis sec">
     <div class="kpi"><b>≈7×</b><span>more dangerous hours once humidity is counted (city-wide 242 → 1,667 h)</span></div>
     <div class="kpi"><b>90–265 h</b><span>of dangerous humid heat per season — in <em>every</em> neighbourhood</span></div>
     <div class="kpi"><b>~81%</b><span>relative humidity — sweat can't evaporate, so the body can't cool</span></div>
@@ -224,7 +258,7 @@
      threshold must move together.</p>
 
   <h3>+2.5&nbsp;°C warming multiplies the hazard ~8-fold</h3>
-  <div class="kpis" style="margin:6px 0 18px;padding:0;max-width:none;grid-template-columns:repeat(3,1fr)">
+  <div class="kpis sec">
     <div class="kpi"><b>×7.7</b><span>more dangerous-heat hours city-wide (242 → 1,861 h)</span></div>
     <div class="kpi"><b>77 &gt; 62</b><span>the <em>coolest</em> future neighbourhood beats today's <em>hottest</em> — no one escapes</span></div>
     <div class="kpi"><b>same order</b><span>the highest-risk settlements stay highest-risk</span></div>
@@ -235,7 +269,7 @@
       <strong>today's worst neighbourhood (62 h)</strong> — and <em>every</em> future bar clears it, even the
       least-affected. City-wide the total rises 242 → 1,861 hours (×7.7); the ordering barely moves.</figcaption>
   </figure>
-  <p>This is the part that should worry a planner: warming doesn't just raise the peak — it lifts the
+  <p>The planning implication is significant: warming does not merely raise the peak — it lifts the
      <strong>whole city above today's worst case</strong>. The coolest neighbourhood of the future
      (Zheng He Towers, 77 h) endures more dangerous heat than the hottest neighbourhood today
      (Jade Gardens, 62 h). And the people-risk <strong>ranking is stable</strong> (only a minor 2↔3 swap),
@@ -248,7 +282,7 @@
   <h2 id="intervention"><span class="num">4.</span>&nbsp; A targeted intervention: cool roofs + street greening</h2>
   <p class="lede">We tested one concrete action on the three highest-risk settlements: brighten the roofs and
      pavements (reflect more sun) and convert some paved/bare ground to grass and trees (add evaporative cooling).</p>
-  <div class="kpis" style="margin:6px 0 18px;padding:0;max-width:none;grid-template-columns:repeat(3,1fr)">
+  <div class="kpis sec">
     <div class="kpi"><b>−60 to −73%</b><span>fewer dangerous-heat hours in the three treated settlements</span></div>
     <div class="kpi"><b>roofs &gt; trees</b><span>cool roofs do 69–82% of the cooling; greening alone barely helps air temperature here</span></div>
     <div class="kpi"><b>36–43%</b><span>of the +2.5&nbsp;°C future offset — adaptation helps, but can't replace cutting emissions</span></div>
@@ -360,7 +394,7 @@
         <li><strong>Greening is not a guaranteed cooling lever — and the model misses part of its value.</strong>
           Here greening <em>alone</em> slightly <em>raised</em> air temperature (the dataset's trees are darker,
           albedo&nbsp;0.14, than the pavement they replace, and evaporation is water-limited), and SUEWS
-          <code>T2</code> cannot see tree shade or radiant comfort — large for pedestrians.</li>
+          air temperature (<code>T2</code>) cannot capture tree shade or radiant comfort — large for pedestrians.</li>
         <li><strong>Anthropogenic heat is switched off</strong>, so risk is likely <em>understated</em> exactly
           where it is worst — the dense settlements would emit the most.</li>
         <li><strong>The socio-economic layer is synthetic</strong> (read ranks, not numbers), <strong>district
@@ -379,7 +413,7 @@
 
   <!-- Policy -->
   <h2 id="policy"><span class="num">6.</span>&nbsp; So what should a city do?</h2>
-  <div class="kpis" style="margin:6px 0 18px;padding:0;max-width:none;grid-template-columns:repeat(3,1fr)">
+  <div class="kpis sec">
     <div class="kpi"><b>3 settlements</b><span>hold essentially all the people-risk — target these first</span></div>
     <div class="kpi"><b>cool roofs first</b><span>reflective surfaces do 69–82% of the cooling; trees for shade</span></div>
     <div class="kpi"><b>adapt + mitigate</b><span>local action offsets only 36–43% of +2.5&nbsp;°C</span></div>
