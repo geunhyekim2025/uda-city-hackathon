@@ -143,30 +143,31 @@ def _figures(P, F, H, I):
     # FIG 1 — hottest != highest-risk (leader-line labels; no point/label overlap)
     Pi = P.set_index("name")
     pos = {n: [Pi.loc[n, "dangerous_heat_hours"], Pi.loc[n, "risk_index"]] for n in Pi.index}
-    pos["Lusitano Square"][0] = 3.4   # nudge the two tied (5 h) cores apart so circles separate
-    pos["Victoria Exchange"][0] = 6.6
+    pos["Lusitano Square"][0] = 3.2   # nudge the two tied (5 h) cores apart so circles separate
+    pos["Victoria Exchange"][0] = 7.0
     fig, ax = plt.subplots(figsize=(9.4, 6.2))
     for n, (x, y) in pos.items():
         ax.scatter(x, y, s=150, color=TCOL[Pi.loc[n, "type"]], edgecolor="k", lw=0.8, zorder=3)
-    lab = {"Kampong Lama": (46, 1.00, False), "Dhobi Lines": (15.5, 0.95, True),
-           "Fuzhou Lanes": (3, 0.90, True), "Mlima Moto": (9, 0.46, False),
-           "Lusitano Square": (10, 0.28, True), "Victoria Exchange": (12, 0.055, True),
-           "Zheng He Towers": (3.5, 0.085, True), "Serendib Rise": (28, 0.045, False),
-           "Taman Melati": (49, 0.045, False), "Jade Gardens": (52, 0.115, True)}
-    for n, (lx, ly, lead) in lab.items():
+    lab = {"Kampong Lama": (45, 1.00, "left", False), "Dhobi Lines": (28.5, 0.85, "left", False),
+           "Fuzhou Lanes": (13.5, 0.86, "left", True), "Mlima Moto": (7.5, 0.44, "left", False),
+           "Lusitano Square": (1.0, 0.30, "left", True), "Victoria Exchange": (9.8, 0.155, "left", True),
+           "Zheng He Towers": (3.6, 0.02, "left", True), "Serendib Rise": (27.5, 0.035, "left", False),
+           "Taman Melati": (48.5, 0.035, "left", False), "Jade Gardens": (62, 0.075, "center", False)}
+    for n, (lx, ly, ha, lead) in lab.items():
         x, y = pos[n]
         if lead:
-            ax.annotate(n, (x, y), xytext=(lx, ly), fontsize=9, ha="left", va="center",
-                        arrowprops=dict(arrowstyle="-", color="#9aa3ab", lw=0.8))
+            ax.annotate(n, (x, y), xytext=(lx, ly), fontsize=9, ha=ha, va="center",
+                        arrowprops=dict(arrowstyle="-", color="#9aa3ab", lw=0.8, shrinkA=2, shrinkB=4))
         else:
-            ax.text(lx, ly, n, fontsize=9, ha="left", va="center")
+            ax.text(lx, ly, n, fontsize=9, ha=ha, va="center")
     for t in TCOL:
         ax.scatter([], [], color=TCOL[t], label=t, edgecolor="k")
-    ax.legend(loc="center right", frameon=False, bbox_to_anchor=(1.0, 0.60))
-    ax.annotate("HIGHEST RISK\n(only 3rd hottest)", (42, 1.0), xytext=(47, 0.66), fontsize=10,
-                color=VERM, fontweight="bold", ha="center", arrowprops=dict(arrowstyle="->", color=VERM))
-    ax.annotate("HOTTEST\n(lowest risk)", (62, 0.0), xytext=(44, 0.34), fontsize=10, color=BLUE,
-                fontweight="bold", ha="center", arrowprops=dict(arrowstyle="->", color=BLUE))
+    ax.legend(loc="center right", frameon=False, bbox_to_anchor=(1.0, 0.62))
+    ax.annotate("HIGHEST RISK\n(only 3rd hottest)", (42, 1.0), xytext=(49, 0.85), fontsize=10,
+                color=VERM, fontweight="bold", ha="center",
+                arrowprops=dict(arrowstyle="->", color=VERM, shrinkB=6))
+    ax.annotate("HOTTEST\n(lowest risk)", (62, 0.0), xytext=(53, 0.20), fontsize=10, color=BLUE,
+                fontweight="bold", ha="center", arrowprops=dict(arrowstyle="->", color=BLUE, shrinkB=6))
     ax.set_xlim(-3, 76); ax.set_ylim(-0.05, 1.10)
     ax.set_xlabel("Heat HAZARD  ->  dangerous-heat hours (T2 > 35 C)")
     ax.set_ylabel("Heat RISK to people  (risk index, 0-1)")
