@@ -140,28 +140,38 @@ def main():
 
 # --------------------------------------------------------------------------- #
 def _figures(P, F, H, I):
-    # FIG 1 — hottest != highest-risk
-    fig, ax = plt.subplots(figsize=(8, 5.5))
-    for _, r in P.iterrows():
-        ax.scatter(r.dangerous_heat_hours, r.risk_index, s=270, color=TCOL[r.type],
-                   edgecolor="k", lw=0.8, zorder=3, alpha=.92)
-        dx, dy = (-3, 0.05) if r["name"] == "Jade Gardens" else (2, 0.02)
-        ax.annotate(r["name"], (r.dangerous_heat_hours, r.risk_index), fontsize=9,
-                    xytext=(r.dangerous_heat_hours + dx, r.risk_index + dy))
+    # FIG 1 — hottest != highest-risk (leader-line labels; no point/label overlap)
+    Pi = P.set_index("name")
+    pos = {n: [Pi.loc[n, "dangerous_heat_hours"], Pi.loc[n, "risk_index"]] for n in Pi.index}
+    pos["Lusitano Square"][0] = 3.4   # nudge the two tied (5 h) cores apart so circles separate
+    pos["Victoria Exchange"][0] = 6.6
+    fig, ax = plt.subplots(figsize=(9.4, 6.2))
+    for n, (x, y) in pos.items():
+        ax.scatter(x, y, s=150, color=TCOL[Pi.loc[n, "type"]], edgecolor="k", lw=0.8, zorder=3)
+    lab = {"Kampong Lama": (46, 1.00, False), "Dhobi Lines": (15.5, 0.95, True),
+           "Fuzhou Lanes": (3, 0.90, True), "Mlima Moto": (9, 0.46, False),
+           "Lusitano Square": (10, 0.28, True), "Victoria Exchange": (12, 0.055, True),
+           "Zheng He Towers": (3.5, 0.085, True), "Serendib Rise": (28, 0.045, False),
+           "Taman Melati": (49, 0.045, False), "Jade Gardens": (52, 0.115, True)}
+    for n, (lx, ly, lead) in lab.items():
+        x, y = pos[n]
+        if lead:
+            ax.annotate(n, (x, y), xytext=(lx, ly), fontsize=9, ha="left", va="center",
+                        arrowprops=dict(arrowstyle="-", color="#9aa3ab", lw=0.8))
+        else:
+            ax.text(lx, ly, n, fontsize=9, ha="left", va="center")
     for t in TCOL:
         ax.scatter([], [], color=TCOL[t], label=t, edgecolor="k")
-    jg = P[P.name == "Jade Gardens"].iloc[0]
-    kl = P[P.name == "Kampong Lama"].iloc[0]
-    ax.annotate("HOTTEST\n(lowest risk)", (jg.dangerous_heat_hours, jg.risk_index),
-                xytext=(jg.dangerous_heat_hours - 9, 0.30), fontsize=10, color=BLUE,
+    ax.legend(loc="center right", frameon=False, bbox_to_anchor=(1.0, 0.60))
+    ax.annotate("HIGHEST RISK\n(only 3rd hottest)", (42, 1.0), xytext=(47, 0.66), fontsize=10,
+                color=VERM, fontweight="bold", ha="center", arrowprops=dict(arrowstyle="->", color=VERM))
+    ax.annotate("HOTTEST\n(lowest risk)", (62, 0.0), xytext=(44, 0.34), fontsize=10, color=BLUE,
                 fontweight="bold", ha="center", arrowprops=dict(arrowstyle="->", color=BLUE))
-    ax.annotate("HIGHEST RISK\n(only 3rd hottest)", (kl.dangerous_heat_hours, kl.risk_index),
-                xytext=(kl.dangerous_heat_hours - 6, 0.80), fontsize=10, color=VERM,
-                fontweight="bold", arrowprops=dict(arrowstyle="->", color=VERM))
+    ax.set_xlim(-3, 76); ax.set_ylim(-0.05, 1.10)
     ax.set_xlabel("Heat HAZARD  ->  dangerous-heat hours (T2 > 35 C)")
     ax.set_ylabel("Heat RISK to people  (risk index, 0-1)")
     ax.set_title("Where it's hottest is not where heat is most dangerous")
-    ax.legend(loc="center right", frameon=False); ax.grid(alpha=.25)
+    ax.grid(alpha=.25)
     fig.savefig(FIGS / "fig1_hottest_vs_risk.png"); plt.close(fig)
 
     # FIG 2 — pillars
