@@ -104,6 +104,7 @@
     <a href="#policy">6 · Policy</a>
     <a href="#methods">7 · Methods</a>
     <a href="#ai">8 · AI workflow</a>
+    <a href="deeper-analysis.html">↗ Deeper analysis</a>
     <a href="ai-workflow.html">↗ AI &amp; community page</a>
   </nav>
 
@@ -245,6 +246,15 @@
      message: <strong>adapt <em>and</em> mitigate</strong> — local cooling buys real relief but cannot
      cancel the heat a hotter climate delivers.</p>
 
+  <div class="callout tldr">
+    <strong>Want the depth?</strong> Four further checks — <em>day vs night</em> risk and who's home,
+    an <em>absolute person-hours</em> metric that fixes the relative-index weakness, <em>which lever
+    cools more</em> (cool roofs beat greening — and why), whether you can <em>green your way out of
+    +2.5&nbsp;°C</em> (no), and a <em>robustness</em> sweep (the ranking is identical at 34/35/36&nbsp;°C
+    and to dropping any vulnerability proxy) — are on the
+    <a href="deeper-analysis.html"><strong>Deeper analysis page →</strong></a>
+  </div>
+
   <!-- 5 -->
   <h2 id="holds"><span class="num">5.</span>&nbsp; Where this bridge holds — and where it breaks</h2>
   <p class="lede">The honest part. This pipeline is a decision aid, not an oracle.</p>
@@ -314,6 +324,9 @@
         default, <code>emissions = 0</code>) — population feeds exposure/vulnerability, not model heat. We
         did not vary it; enabling it would raise the dense settlements' hazard further (they would emit
         most), so our hotspot risk is, if anything, conservative.</li>
+      <li><strong>Deeper analysis:</strong> <code>scripts/extensions.py</code> adds the day/night split,
+        person-hours, intervention decomposition, greening-dose and robustness sweep (see the
+        <a href="deeper-analysis.html">Deeper analysis page</a>).</li>
       <li><strong>Source &amp; data:</strong> config <code>uda-city.yml</code>, bridge
         <code>risk_bridge.py</code> / caveats <code>risk_bridge.md</code>, scenario
         <code>uda-city-intervention.yml</code> — all in this repository. UDA-city is

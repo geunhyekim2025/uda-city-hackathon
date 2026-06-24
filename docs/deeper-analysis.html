@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deeper analysis — UDA-city heat risk</title>
+<meta name="description" content="Four robustness and design checks on the UDA-city heat-risk bridge: day vs night, person-hours, which intervention lever works, can you green your way out of +2.5°C, and ranking robustness.">
+<style>
+  :root{--ink:#1d2733;--mut:#5b6b7b;--line:#e3e8ee;--haz:#D55E00;--saf:#0072B2;--core:#6c757d;--accent:#b8860b;--bg:#fbfcfd;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;}
+  .wrap{max-width:860px;margin:0 auto;padding:0 22px 90px;}
+  header{background:linear-gradient(135deg,#22303f,#3a5169);color:#fff;padding:48px 22px 40px;}
+  header .kicker{letter-spacing:.14em;text-transform:uppercase;font-size:.72rem;opacity:.85;margin:0 0 10px}
+  header h1{font-size:1.9rem;line-height:1.15;margin:0 0 12px;font-weight:800;max-width:760px}
+  header p{font-size:1.05rem;opacity:.94;margin:0;max-width:700px}
+  header a{color:#cfe6ff}
+  h2{font-size:1.3rem;margin:46px 0 4px;padding-top:14px;border-top:2px solid var(--line);font-weight:800}
+  h2 .num{color:var(--accent)}
+  .lede{color:var(--mut);font-size:1.0rem;margin:4px 0 14px}
+  figure{margin:18px 0 6px;text-align:center}
+  figure img{max-width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px}
+  figcaption{color:var(--mut);font-size:.85rem;margin-top:7px}
+  .callout{background:#fff;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:15px 18px;margin:18px 0}
+  .callout.key{border-left-color:var(--saf);background:#f3f8fc}
+  .callout.warn{border-left-color:var(--haz);background:#fff6f1}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{background:#f1f5f9;font-size:.78rem;text-transform:uppercase;color:var(--mut)}
+  tbody tr:last-child td{border-bottom:none}
+  code{background:#eef2f6;padding:1px 6px;border-radius:5px;font-size:.86em}
+  .back{display:inline-block;margin:24px 0 0;color:var(--saf);text-decoration:none;font-weight:600}
+  .repro{background:#0f1b26;color:#dfe8f0;border-radius:10px;padding:12px 15px;font-size:.84rem;margin:14px 0}
+  .repro code{background:none;color:#7fd1a8}
+  footer{color:var(--mut);font-size:.82rem;border-top:1px solid var(--line);margin-top:42px;padding-top:18px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="kicker">UDA-city · deeper analysis</p>
+    <h1>Four checks that make the heat-risk story defensible</h1>
+    <p>Beyond the headline: when heat is dangerous (day vs night), an absolute metric that survives where the
+       index fails, which intervention lever actually works, whether greening can beat warming, and how robust
+       the ranking is. <a href="index.html">← back to the main story</a></p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <h2><span class="num">1.</span> Day vs night — and who is home</h2>
+  <p class="lede">UNDRR exposure is time-of-day specific. We split the humid-heat hazard into daytime
+     (06–18 h) and night (18–06 h) and paired each with the matching population.</p>
+  <figure>
+    <img src="figs/fig8_day_night.png" alt="Left: daytime humid-heat hours dwarf nighttime hours for every neighbourhood. Right: by type, hotspot night population rises (300→400), core night population falls (250→130), refuge rises slightly (80→100).">
+    <figcaption>Left: dangerous humid heat (wet-bulb &gt; 28 °C) is almost entirely a <strong>daytime</strong>
+      phenomenon — nights stay below the wet-bulb line. Right: but the population <em>flips</em> by the clock.</figcaption>
+  </figure>
+  <div class="callout key">
+    <strong>Finding.</strong> Daytime is the dangerous window, so daytime exposure dominates — and the formal
+    <em>cores</em> look busy by day (250 people/ha of commuters) but <strong>empty at night</strong>
+    (130/ha). The informal <em>hotspots</em> do the opposite: <strong>300 by day → 400 at night</strong>.
+    So the residual risk after dark falls on exactly the vulnerable residents who are always home. Daytime
+    heat-relief (shade, water, work pauses) and nighttime cooling refuges are different interventions for
+    different populations.
+  </div>
+
+  <h2><span class="num">2.</span> Person-hours — an absolute metric that doesn't lie</h2>
+  <p class="lede">The risk <em>index</em> is relative (min–max), so it hides absolute change and can't compare
+     cities. <strong>Person-hours of dangerous heat = dangerous hours × exposed population</strong> is
+     absolute and transferable — it directly answers the relativity weakness flagged on the main page.</p>
+  <figure>
+    <img src="figs/fig9_person_hours.png" alt="Bar chart of dangerous person-hours per hectare; the three informal hotspots are far above the cores and refuges.">
+    <figcaption>Dangerous person-hours per hectare (daytime + nighttime). Kampong Lama tops at ~61,000 —
+      and unlike the index, this number is a real quantity you could compare to another city.</figcaption>
+  </figure>
+  <div class="callout key">
+    <strong>Finding.</strong> The absolute metric agrees with the index ranking (informal settlements worst)
+    <em>and</em> survives interventions and cross-city comparison. Use person-hours to <strong>track real
+    progress</strong>; use the index only to rank within one snapshot.
+  </div>
+
+  <h2><span class="num">3.</span> Which lever cools more? Cool roofs — not greening</h2>
+  <p class="lede">We decomposed the intervention: cool-roof-only vs greening-only vs combined (present).</p>
+  <figure>
+    <img src="figs/fig10_decomposition.png" alt="Cool-roof-only cuts dangerous hours sharply; greening-only is slightly above baseline; combined is between roof-only and baseline.">
+    <figcaption>Cool roofs alone cut dangerous-heat hours <strong>69–82%</strong>; greening <em>alone</em>
+      slightly <strong>raises</strong> them (−10 to −27%); combined lands at −60 to −73%.</figcaption>
+  </figure>
+  <div class="callout warn">
+    <strong>Counter-intuitive — and honest.</strong> In this water-limited city the dataset's evergreen trees
+    have albedo <strong>0.14, darker than the 0.20 pavement they replace</strong>, and evapotranspiration is
+    moisture-limited — so greening alone slightly warms daytime <em>air</em> temperature, and even dilutes the
+    cool-roof gain. <strong>Important caveat the model can't see:</strong> SUEWS <code>T2</code> is air
+    temperature — it does <em>not</em> capture tree <strong>shade or radiant comfort</strong>, which are large
+    for pedestrians. So greening is still valuable for human comfort; it just isn't the lever for
+    <em>air-temperature</em> hazard here. Cool roofs are the robust air-temperature play.
+  </div>
+
+  <h2><span class="num">4.</span> Can you green your way out of +2.5 °C? No.</h2>
+  <figure>
+    <img src="figs/fig11_greening_dose.png" alt="Under the +2.5°C future, greening at 1x and 2x barely lowers dangerous hours; even roof+green stays far above present-day levels.">
+    <figcaption>Under +2.5 °C: even <strong>doubling</strong> greening removes only ~5% of the warming-driven
+      rise, and roof+green together still sit 3–4× above today. None reach present-day levels.</figcaption>
+  </figure>
+  <div class="callout">
+    <strong>Planning message.</strong> Local measures buy real relief but <strong>cannot cancel a hotter
+    climate</strong> — adapt <em>and</em> mitigate. On Kampong Lama: 42 h today → 249 h (+2.5 °C) → 236 h
+    (2× greening) → 173 h (roof+green). Still four times today.
+  </div>
+
+  <h2><span class="num">5.</span> Is the ranking robust? Yes — strikingly</h2>
+  <p class="lede">A ranking is only trustworthy if it doesn't depend on arbitrary choices. We varied the
+     threshold and dropped each vulnerability proxy in turn.</p>
+  <table>
+    <thead><tr><th>Neighbourhood</th><th>rank @34 °C</th><th>rank @35 °C</th><th>rank @36 °C</th>
+      <th>drop any 1 of 5 vuln. proxies</th></tr></thead>
+    <tbody>
+      <tr><td>Kampong Lama</td><td>1</td><td>1</td><td>1</td><td>1 (all cases)</td></tr>
+      <tr><td>Dhobi Lines</td><td>2</td><td>2</td><td>2</td><td>2 (all cases)</td></tr>
+      <tr><td>Fuzhou Lanes</td><td>3</td><td>3</td><td>3</td><td>3 (all cases)</td></tr>
+      <tr><td>Mlima Moto</td><td>4</td><td>4</td><td>4</td><td>4 (all cases)</td></tr>
+      <tr><td>refuges (Jade/Taman/Serendib)</td><td>7=</td><td>7=</td><td>7=</td><td>7= (all cases)</td></tr>
+    </tbody>
+  </table>
+  <div class="callout key">
+    <strong>Finding.</strong> The risk ranking is <strong>identical</strong> at 34, 35 and 36 °C, and
+    <strong>identical</strong> when any single vulnerability indicator is removed. The headline (hottest ≠
+    highest-risk; informal settlements worst) is <em>not</em> an artefact of one threshold or one weighting —
+    it is structural.
+  </div>
+
+  <h2>Reproduce</h2>
+  <div class="repro"><code>.venv/bin/python scripts/extensions.py</code></div>
+  <p class="lede">Runs the day/night split, person-hours, the cool-roof/greening decomposition, the greening
+     dose under +2.5 °C, and the robustness sweep — writing <code>outputs/derived/ext_*.csv</code> and these
+     four figures.</p>
+
+  <a class="back" href="index.html">← back to the main story</a>
+
+  <footer>
+    Modelled with <strong>SUEWS</strong> via <code>supy 2026.6.5</code> (NARP + classic OHM). Humid heat =
+    wet-bulb (Stull 2011) from the model's 2 m T2 + RH2. UDA-city is synthetic; the socio-economic layer is
+    synthetic. Last updated 24 June 2026.
+  </footer>
+
+</div>
+</body>
+</html>
