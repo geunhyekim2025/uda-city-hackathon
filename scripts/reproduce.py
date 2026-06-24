@@ -199,14 +199,18 @@ def _figures(P, F, H, I):
     ax.grid(alpha=.25, axis="x")
     fig.savefig(FIGS / "fig2_pillars.png"); plt.close(fig)
 
-    # FIG 3 — present vs future
+    # FIG 3 — present vs future (with today's-worst reference line)
     Fs = F.sort_values("dry_hrs_fut", ascending=False); x = np.arange(len(Fs)); w = 0.4
-    fig, ax = plt.subplots(figsize=(9, 5))
-    ax.bar(x - w / 2, Fs.dry_hrs_pres, w, label="Present", color=SKY)
-    ax.bar(x + w / 2, Fs.dry_hrs_fut, w, label="Future (+2.5 C)", color=VERM)
+    pmax = F.dry_hrs_pres.max()
+    fig, ax = plt.subplots(figsize=(9.6, 5.6))
+    ax.bar(x - w / 2, Fs.dry_hrs_pres, w, label="Today", color=SKY)
+    ax.bar(x + w / 2, Fs.dry_hrs_fut, w, label="+2.5 C future", color=VERM)
+    ax.axhline(pmax, ls="--", lw=1.5, color="#2b3a48")
+    ax.text(len(Fs) - 0.5, pmax + 5, f"today's worst = {int(pmax)} h", ha="right", va="bottom",
+            fontsize=9, color="#2b3a48", fontweight="bold")
     ax.set_xticks(x); ax.set_xticklabels(Fs.name, rotation=40, ha="right", fontsize=9)
-    ax.set_ylabel("dangerous-heat hours (T2 > 35 C)")
-    ax.set_title("+2.5 C warming multiplies dangerous heat x7.7 - everywhere")
+    ax.set_ylabel("hours of dangerous heat (above 35 C)")
+    ax.set_title("A +2.5 C future ~8x the dangerous heat - and no neighbourhood escapes")
     ax.legend(frameon=False); ax.grid(alpha=.25, axis="y")
     fig.savefig(FIGS / "fig3_future.png"); plt.close(fig)
 
