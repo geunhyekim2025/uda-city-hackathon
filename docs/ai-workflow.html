@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI workflow &amp; community contribution — UDA-city</title>
-<meta name="description" content="How the UDA-city heat-risk submission was built with an AI agent driving SUEWS/supy — the prompts, the adversarial cross-checks that changed the answer, and the SUEWS-community contributions.">
+<meta name="description" content="How the UDA-city heat-risk submission was built with an AI agent driving SUEWS/supy — the human-in-the-loop workflow, the prompts, the adversarial cross-checks that changed the answer, the novel analyses, and the SUEWS-community contributions.">
 <style>
   :root{--ink:#1d2733;--mut:#5b6b7b;--line:#e3e8ee;--haz:#D55E00;--saf:#0072B2;--core:#6c757d;--accent:#b8860b;--bg:#fbfcfd;}
   *{box-sizing:border-box}
@@ -13,27 +13,33 @@
   header{background:linear-gradient(135deg,#22303f,#3a5169);color:#fff;padding:48px 22px 40px;}
   header .kicker{letter-spacing:.14em;text-transform:uppercase;font-size:.72rem;opacity:.85;margin:0 0 10px}
   header h1{font-size:1.9rem;line-height:1.15;margin:0 0 12px;font-weight:800;max-width:760px}
-  header p{font-size:1.05rem;opacity:.94;margin:0;max-width:700px}
+  header p{font-size:1.05rem;opacity:.94;margin:0;max-width:720px}
   header a{color:#cfe6ff}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:-30px auto 0;max-width:860px;padding:0 22px;position:relative;z-index:2}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px 12px;box-shadow:0 6px 18px rgba(20,40,60,.06);text-align:center}
+  .kpi b{display:block;font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1.1}
+  .kpi span{display:block;font-size:.76rem;color:var(--mut);margin-top:5px}
   h2{font-size:1.35rem;margin:46px 0 6px;padding-top:14px;border-top:2px solid var(--line);font-weight:800}
   h3{font-size:1.05rem;margin:24px 0 4px}
   .lede{color:var(--mut);font-size:1.01rem;margin:4px 0 16px}
   .back{display:inline-block;margin:22px 0 0;color:var(--saf);text-decoration:none;font-weight:600}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
   .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
-  .card.good{border-left:5px solid var(--saf)} .card.good h4{color:var(--saf);margin:0 0 6px}
-  .card.flag{border-left:5px solid var(--haz)} .card.flag h4{color:var(--haz);margin:0 0 6px}
-  ul{margin:8px 0 0;padding-left:20px} li{margin:7px 0}
+  .card.good{border-left:5px solid var(--saf)} .card.good h4{color:var(--saf);margin:0 0 6px;font-size:1rem}
   .post{background:#fff;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:16px 20px;margin:16px 0}
   .post h4{margin:0 0 6px;font-size:1.02rem}
   .post .tag{display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--accent);border-radius:999px;padding:2px 9px;margin-bottom:8px}
-  .prompt{background:#f3f8fc;border-radius:8px;padding:10px 14px;margin:8px 0;font-size:.92rem;color:#28465e}
+  .prompt{background:#f3f8fc;border-left:4px solid var(--saf);border-radius:8px;padding:10px 14px;margin:8px 0;font-size:.92rem;color:#28465e}
   .repro{background:#0f1b26;color:#dfe8f0;border-radius:10px;padding:14px 16px;font-size:.84rem;overflow-x:auto;margin:14px 0}
-  .repro code{color:#7fd1a8}
-  .callout{background:#fffdf5;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:16px 20px;margin:20px 0}
+  .repro code{color:#7fd1a8;background:none}
+  .callout{background:#f3f8fc;border:1px solid var(--line);border-left:5px solid var(--saf);border-radius:10px;padding:16px 20px;margin:20px 0}
+  .loop{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0;font-size:.9rem}
+  .loop span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-weight:600}
+  .loop .arr{border:none;color:var(--mut);font-weight:800;padding:0 2px}
+  ul{margin:8px 0 0;padding-left:20px} li{margin:7px 0}
   code{background:#eef2f6;padding:1px 6px;border-radius:5px;font-size:.86em}
   footer{color:var(--mut);font-size:.82rem;border-top:1px solid var(--line);margin-top:46px;padding-top:18px}
-  @media(max-width:680px){.grid2{grid-template-columns:1fr}header h1{font-size:1.5rem}}
+  @media(max-width:680px){.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}header h1{font-size:1.5rem}}
 </style>
 </head>
 <body>
@@ -41,89 +47,135 @@
   <div class="wrap">
     <p class="kicker">UDA-city · AI collaboration &amp; SUEWS community</p>
     <h1>How this was built with AI — and where the AI cross-checked itself</h1>
-    <p>A SUEWS run is only as good as the scrutiny around it. The agent (driving <code>supy</code> + the
-       SUEWS validation tools) was used not to autocomplete answers, but to <em>catch its own mistakes</em>.
-       <a href="index.html">← back to the main story</a></p>
+    <p>This submission was produced by a human working with an AI agent that drove <code>supy</code> and the
+       SUEWS validation tools. The point of interest is not that AI wrote code — it is <em>where the
+       collaboration caught mistakes a single pass would have shipped</em>. <a href="index.html">← back to the
+       main story</a></p>
   </div>
 </header>
 
+<div class="kpis">
+  <div class="kpi"><b>7</b><span>SUEWS scenarios run (present, +2.5&nbsp;°C, &amp; 5 intervention variants)</span></div>
+  <div class="kpi"><b>14</b><span>figures — every one regenerable from a script</span></div>
+  <div class="kpi"><b>8+</b><span>self-corrections the AI caught before they reached the page</span></div>
+  <div class="kpi"><b>1 command</b><span>reproduces every number and figure</span></div>
+</div>
+
 <div class="wrap">
 
-  <h2>The workflow, in five steps</h2>
-  <ol>
-    <li><strong>Ground the agent in the dataset, not guesses.</strong> First it read
-      <code>agent_manifest.yml</code> and <code>risk_bridge.md</code>/<code>.py</code> <em>in full</em>, so
-      every later step used the repo's own contract (canonical config, physics lock, hazard definition).</li>
-    <li><strong>Confirm it runs.</strong> Built a Python 3.12 env, installed <code>supy ≥ 2026.6.5</code>
-      (the manifest's hard requirement), and ran the repo's own smoke test (asserts T2/QH finite) before
-      any analysis.</li>
-    <li><strong>Present → risk bridge</strong> for all 10 neighbourhoods, using the reference
-      <code>build_risk</code> verbatim, then read the result against the urban form.</li>
-    <li><strong>Stress the result:</strong> humid-heat metrics, a +2.5 K future, and a cool-roof + greening
-      intervention — each validated, each cross-checked.</li>
-    <li><strong>Deliver:</strong> a one-command reproducibility script and this public story site, with an
-      honest "where it holds / breaks" account.</li>
-  </ol>
+  <h2>It was a loop, not a one-shot</h2>
+  <p class="lede">The value came from iterating: the human asked domain questions, the AI ran SUEWS and
+     analysed, the AI checked its own result, and the human scrutinised every figure and pushed for honesty.</p>
+  <div class="loop">
+    <span>Human: domain question</span><span class="arr">→</span>
+    <span>AI: run SUEWS + analyse</span><span class="arr">→</span>
+    <span>AI: cross-check itself</span><span class="arr">→</span>
+    <span>Human: scrutinise &amp; push back</span><span class="arr">↺</span>
+  </div>
+  <p>Several findings exist <em>only</em> because the human asked the right question and the AI then
+     interrogated its own answer. "Is a dry-bulb threshold appropriate for a humid city?" led to the wet-bulb
+     re-scoring (and the discovery that a naïve threshold saturates). "Why cool roofs and greening?" led to the
+     lever-by-lever decomposition (and the counter-intuitive finding that greening alone slightly <em>warms</em>
+     the air). "Is this really the best way to show it?" led to the heat-shaded risk table and the framework
+     diagram. The AI was treated as a fast, tireless analyst that must <em>justify</em> every step — not an oracle.</p>
 
   <h2>Prompts that mattered</h2>
   <div class="prompt">"Read <code>risk_bridge.md</code> and <code>risk_bridge.py</code> in full, plus the lead
     example prompt. Summarise what the bridge computes, what SUEWS outputs it needs, and where the docs flag
-    limitations. <strong>Don't run anything yet.</strong>"</div>
+    limitations. <strong>Don't run anything yet.</strong>" <em>— comprehension before action.</em></div>
   <div class="prompt">"Which is hottest, which is highest-risk, and are they the same? Explain the divergence
     in terms of urban form — roughness, mixing, exposure, vulnerability."</div>
   <div class="prompt">"The docs flag that 35 °C dry-bulb is inappropriate for a humid city. Re-compute the
-    hazard using a humid-heat metric, and show how the ranking changes."</div>
-  <div class="prompt">"Run a cool-roof + greening intervention; quantify the reduction in dangerous-heat
-    hours and risk index versus baseline."</div>
+    hazard using a humid-heat metric, and show how the ranking changes." <em>— surfaced the saturation trap.</em></div>
+  <div class="prompt">"Run a cool-roof + greening intervention; quantify the reduction versus baseline — and
+    is a comparison table of <em>different</em> interventions useful here?" <em>— led to the lever decomposition.</em></div>
+  <div class="prompt">"Is the ranking robust, or an artefact of one threshold/weighting?" <em>— led to the
+    34/35/36 °C and leave-one-out sweep.</em></div>
 
   <h2>Where AI + human cross-checking changed the answer</h2>
-  <p class="lede">These are the moments the collaboration added real value — catching what a single-pass
-     answer would have got wrong.</p>
+  <p class="lede">Each of these is a place a single-pass answer would have been wrong, misleading, or unverified.</p>
   <div class="grid2">
     <div class="card good">
       <h4>✓ Caught a saturating metric</h4>
-      The first humid pass kept the 35 °C threshold on <em>apparent temperature</em>. Cross-check: AT runs
-      ~6 °C hotter than T2 here, so every neighbourhood was "dangerous" ~800 h — the signal collapsed.
-      Fix: threshold each humid metric at its own danger level (wet-bulb&nbsp;&gt;&nbsp;28 °C).
-      <strong>Lesson surfaced: change the metric and threshold together.</strong>
+      The first humid pass kept the 35 °C threshold on <em>apparent temperature</em>. A self-check found AT runs
+      ~6 °C hotter than air temperature, so every neighbourhood read "dangerous" ~800 h — the signal collapsed.
+      Fix: threshold each metric at its own danger level. <strong>Lesson: move the metric and threshold together.</strong>
     </div>
     <div class="card good">
       <h4>✓ Exposed a scoring artefact</h4>
-      After the intervention cut Kampong Lama's dangerous hours 60%, its <em>relative</em> risk index stayed
-      pinned at 1.00 and untreated areas' indices rose without getting hotter. Traced to min–max scaling and
-      made a headline caveat: <strong>judge by absolute hazard avoided, not a relative index.</strong>
+      After the intervention cut Kampong Lama's danger 60%, its <em>relative</em> index stayed at 1.00 and
+      untreated areas' indices rose without getting hotter. Traced to min–max scaling → became a headline caveat,
+      and motivated a new <strong>absolute</strong> metric (person-hours).
     </div>
     <div class="card good">
-      <h4>✓ Verified the mechanism</h4>
-      The intervention's cooling was confirmed against the surface energy balance — QN↓ (higher albedo),
-      QE↑ (greening), QH↓ ~25% (less sensible heating of the air) — not just asserted from fewer hot hours.
+      <h4>✓ Investigated a counter-intuitive result</h4>
+      The decomposition showed greening <em>alone</em> slightly <strong>raised</strong> air temperature. Rather
+      than hide it, the AI dug into <em>why</em>: the dataset's evergreen trees have albedo 0.14 — darker than the
+      0.20 pavement they replace — and evaporation is water-limited. Reported as an honest finding.
     </div>
     <div class="card good">
-      <h4>✓ Physically-consistent humidity</h4>
-      Used the model's own 2 m <code>RH2</code>/<code>Q2</code> (height-consistent with <code>T2</code>)
-      rather than splicing forcing-level RH onto modelled T2 — and stated the choice so a reviewer can object.
+      <h4>✓ Stress-tested its own ranking</h4>
+      Re-ran the risk ranking at 34/35/36 °C and with each vulnerability proxy removed in turn — <strong>identical
+      every time</strong>. The headline is structural, not a product of one arbitrary choice.
+    </div>
+    <div class="card good">
+      <h4>✓ Quantified instead of asserting</h4>
+      "Smoother places are hotter" was not left as a claim — the AI regressed dangerous hours on roughness
+      (frontal-area density) and reported <strong>R² = 0.73</strong>.
+    </div>
+    <div class="card good">
+      <h4>✓ Used physically-consistent inputs</h4>
+      Used the model's own 2 m humidity (<code>RH2</code>/<code>Q2</code>, height-consistent with the modelled
+      temperature) for the wet-bulb metric, rather than splicing forcing-level RH — and stated the choice so a
+      reviewer can object.
     </div>
   </div>
 
+  <h2>Innovation — analyses we built beyond the brief</h2>
+  <ul>
+    <li><strong>Person-hours &amp; vulnerable person-hours</strong> — an absolute, transferable hazard×exposure
+      metric that fixes the relative index's blind spot.</li>
+    <li><strong>Time-resolved (day vs night) risk</strong> — pairing the humid-heat hazard with the matching
+      daytime/nighttime population (the dataset's unused <code>population_night</code>).</li>
+    <li><strong>Lever-by-lever intervention decomposition</strong> + the evidence-led optimum (cool roofs + cool
+      pavements), and a greening dose under +2.5 °C.</li>
+    <li><strong>Heatwave-event metrics</strong> (longest spell, multi-day events, degree-hours) and the
+      roughness→heat regression.</li>
+    <li><strong>A SUEWS <code>assess_readiness</code> provenance check</strong> — confirming zero assumed sample
+      defaults before trusting the config.</li>
+  </ul>
+
+  <h2>Guardrails — how the AI was kept honest</h2>
+  <ul>
+    <li><strong>Validate before every long run.</strong> <code>suews validate</code> (zero errors) on each edited
+      config <em>before</em> simulating — catching structure issues up front, not after a narrative was written.</li>
+    <li><strong>SUEWS MCP tools as checks</strong> — <code>validate_config</code> and <code>assess_readiness</code>
+      used to confirm the config is valid <em>and</em> genuinely site-specific.</li>
+    <li><strong>Reproducibility by construction</strong> — every figure and table comes from a script; the whole
+      analysis reruns with one command and returns the same numbers.</li>
+    <li><strong>State choices for objection</strong> — thresholds, weights and assumptions are surfaced (and the
+      anthropogenic-heat term is flagged as switched off), so a reviewer can disagree on the record.</li>
+  </ul>
+
   <h3>Engineering issues the agent caught and fixed</h3>
   <ul>
-    <li><code>matplotlib.cm.get_cmap</code> removed in the installed version → switched to
-      <code>plt.get_cmap</code>.</li>
-    <li>GitHub Pages "build failed" because it ran <strong>Jekyll</strong> on hand-written static HTML →
-      added <code>docs/.nojekyll</code> (the correct fix).</li>
-    <li>Editing land cover kept surface fractions summing to 1.0, then ran <code>suews validate</code>
-      (zero errors) <em>before</em> the long run; verified the live site end-to-end after each push.</li>
+    <li><code>matplotlib.cm.get_cmap</code> removed in the installed version → switched to <code>plt.get_cmap</code>.</li>
+    <li>GitHub Pages "build failed" because it ran <strong>Jekyll</strong> on hand-written static HTML → added
+      <code>docs/.nojekyll</code>.</li>
+    <li>A legend bug (empty-bar handles rendered every swatch blue) → rebuilt with proper colour patches; label
+      overlaps on three figures → leader-line placement.</li>
+    <li>Verified the live site end-to-end after every push (asset returns 200, content served) rather than
+      assuming deployment.</li>
   </ul>
 
   <h2>Contribution to the SUEWS community</h2>
-  <p class="lede">Reusable findings shared with the SUEWS Discourse hackathon channel — best practice and a
+  <p class="lede">Reusable findings drafted for the SUEWS Discourse hackathon channel — best practice and a
      critical suggestion, drawn from the work above.</p>
-
   <div class="post">
     <span class="tag">Best practice</span>
     <h4>A humid-heat threshold has to move with the metric</h4>
-    <p>Switching T2 → apparent temperature but keeping a 35 °C threshold saturates the hazard (~800 h
-      "dangerous" everywhere) and scrambles the ranking. Pair every metric with a metric-appropriate
+    <p>Switching air temperature → apparent temperature but keeping a 35 °C threshold saturates the hazard
+      (~800 h "dangerous" everywhere) and scrambles the ranking. Pair every metric with a metric-appropriate
       threshold (e.g. wet-bulb&nbsp;&gt;&nbsp;28 °C). Swapping the metric alone is a silent failure mode.</p>
   </div>
   <div class="post">
@@ -131,29 +183,31 @@
     <h4>Relative (min–max) risk indices hide interventions</h4>
     <p>A min–max index can show a 60%-effective intervention as helping nobody (the worst site stays at 1.0)
       and can <em>inflate</em> untreated sites. Report the absolute hazard change (hours of dangerous heat
-      avoided) alongside any relative index, and note such indices don't transfer between cities or states.</p>
+      avoided) alongside any relative index, and note such indices do not transfer between cities or states.</p>
   </div>
   <div class="post">
     <span class="tag">Best practice</span>
     <h4>Validate before you run; use the model's own 2 m state</h4>
-    <p>Run <code>suews validate</code> before every long simulation (it catches structure issues up front),
-      and use SUEWS' own <code>RH2</code>/<code>Q2</code> for humid-heat indices rather than splicing
-      forcing-level RH onto modelled T2.</p>
+    <p>Run <code>suews validate</code> before every long simulation, and use SUEWS' own
+      <code>RH2</code>/<code>Q2</code> for humid-heat indices rather than splicing forcing-level RH onto the
+      modelled temperature.</p>
   </div>
 
   <h2>Reproduce everything</h2>
   <div class="repro"><code>uv venv --python 3.12 .venv<br>
 uv pip install --python .venv "supy&gt;=2026.6.5" pyyaml matplotlib pandas<br>
-.venv/bin/python scripts/reproduce.py</code></div>
+.venv/bin/python scripts/reproduce.py      # main analysis + figures 1–7<br>
+.venv/bin/python scripts/extensions.py     # day/night, person-hours, decomposition, robustness<br>
+.venv/bin/python scripts/extensions2.py    # optimal package, vulnerable person-hours, roughness fit</code></div>
   <p class="lede">Deterministic — present / future dangerous-heat-hour totals <strong>242 / 1861</strong>;
-     intervention reductions <strong>−60 / −65 / −73%</strong>. Full log:
+     intervention reductions <strong>−60 / −65 / −73%</strong>. Full curated log:
      <a href="https://github.com/geunhyekim2025/uda-city-hackathon/blob/main/transcripts/ai-collaboration.md"><code>transcripts/ai-collaboration.md</code></a>.</p>
 
   <a class="back" href="index.html">← back to the main story</a>
 
   <footer>
     Modelled with <strong>SUEWS</strong> via <code>supy 2026.6.5</code> (NARP + classic OHM). UDA-city is a
-    synthetic hackathon dataset; the socio-economic layer is synthetic. Last updated 24 June 2026.
+    synthetic hackathon dataset; the socio-economic layer is synthetic.
   </footer>
 
 </div>
