@@ -238,9 +238,9 @@ def _figures(P, F, H, I):
     ax.set_title("Count humidity, and the danger leaps - in every neighbourhood")
     ax.set_xlim(-8, 300)
     hd = [Line2D([], [], marker="o", color="w", markerfacecolor=SKY, markeredgecolor="k", markersize=10,
-                 label="Dry-bulb only (air > 35 C)"),
+                 label="Plain air temperature (> 35 C)"),
           Line2D([], [], marker="o", color="w", markerfacecolor=VERM, markeredgecolor="k", markersize=10,
-                 label="With humidity (wet-bulb > 28 C)")]
+                 label="Heat + humidity, i.e. wet-bulb (> 28 C)")]
     leg = ax.legend(handles=hd, loc="lower right", frameon=True, fontsize=9)
     leg.get_frame().set_edgecolor("#9aa3ab")
     ax.grid(alpha=.25, axis="x")
