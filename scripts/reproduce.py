@@ -284,19 +284,19 @@ def _figures(P, F, H, I):
 def _fig7(off):
     # present vs future (no action) vs future + intervention; offset labels above the blue bars
     x = np.arange(len(off)); w = 0.26
-    fig, ax = plt.subplots(figsize=(8.8, 5.4))
+    fig, ax = plt.subplots(figsize=(9.2, 5.4))
     ax.bar(x - w, off.present_base, w, label="Today", color=SKY)
     ax.bar(x, off.future_base, w, label="+2.5 C future, no action", color=VERM)
     ax.bar(x + w, off.future_intv, w, label="+2.5 C future + cool-roof/greening", color=BLUE)
     for xi, r in off.reset_index(drop=True).iterrows():
         ax.annotate("", xy=(xi + w, r.future_intv), xytext=(xi, r.future_base),
-                    arrowprops=dict(arrowstyle="->", color="#444", lw=1.2))
-        ax.text(xi + w, r.future_intv + 6, f"-{r.offset_pct:.0f}% of\nwarming", ha="center", va="bottom",
+                    arrowprops=dict(arrowstyle="->", color="#444", lw=1.2, shrinkB=2))
+        ax.text(xi + w + 0.17, r.future_intv, f"-{r.offset_pct:.0f}% of\nwarming", ha="left", va="center",
                 fontsize=8.5, color=BLUE, fontweight="bold", linespacing=.95)
     ax.set_xticks(x); ax.set_xticklabels(off.name, fontsize=11)
     ax.set_ylabel("hours of dangerous heat (above 35 C)")
     ax.set_title("Adaptation softens the +2.5 C future - but cannot erase it")
-    ax.set_ylim(0, 300)
+    ax.set_ylim(0, 300); ax.set_xlim(-0.55, 2.75)
     ax.legend(loc="upper right", frameon=True, fontsize=8.8).get_frame().set_edgecolor("#9aa3ab")
     ax.grid(alpha=.25, axis="y")
     fig.savefig(FIGS / "fig7_future_intervention.png"); plt.close(fig)
