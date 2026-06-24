@@ -191,14 +191,23 @@
   <h2 id="future"><span class="num">3.</span>&nbsp; What humidity and a +2.5&nbsp;°C future change</h2>
 
   <h3>Humidity makes everywhere more dangerous — but doesn't change who's worst</h3>
-  <p>A dry-bulb 35&nbsp;°C threshold understates danger in a city at ~81% humidity. Re-scoring the hazard with
-     a humid-heat measure (wet-bulb temperature) shows <strong>every neighbourhood endures 90–265 hours of
-     dangerous humid heat</strong> — far more than the dry-bulb count suggests.</p>
+  <div class="kpis" style="margin:6px 0 18px;padding:0;max-width:none;grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><b>≈7×</b><span>more dangerous hours once humidity is counted (city-wide 242 → 1,667 h)</span></div>
+    <div class="kpi"><b>90–265 h</b><span>of dangerous humid heat per season — in <em>every</em> neighbourhood</span></div>
+    <div class="kpi"><b>~81%</b><span>relative humidity — sweat can't evaporate, so the body can't cool</span></div>
+  </div>
+  <p>Why this matters: a dry-bulb thermometer ignores humidity, but the human body cools by <strong>sweating</strong>
+     — and sweat only works if it can evaporate. In humid air it can't, so the body overheats at temperatures a
+     dry-bulb reading calls "safe." The honest measure is the <strong>wet-bulb temperature</strong>, which captures
+     exactly this. For scale: a wet-bulb of <strong>28&nbsp;°C is already dangerous</strong> for vulnerable people,
+     <strong>31&nbsp;°C is severe</strong>, and <strong>35&nbsp;°C is the theoretical limit of human survivability</strong>.
+     This city spends <strong>90–265 hours every season above the 28&nbsp;°C danger line</strong>.</p>
   <figure>
-    <img src="figs/fig5_humidity.png" alt="Grouped bars comparing dry-bulb dangerous hours with the much larger wet-bulb dangerous hours for every neighbourhood.">
-    <figcaption>Counting humid heat (wet-bulb &gt; 28&nbsp;°C, orange) reveals far more dangerous hours than
-      dry-bulb alone (blue) — in <em>every</em> neighbourhood. Humidity raises the danger everywhere
-      together, so the <em>ranking</em> is unchanged; the absolute danger is much higher.</figcaption>
+    <img src="figs/fig5_humidity.png?v=2" alt="Dumbbell chart: for each neighbourhood, a blue dot (dry-bulb dangerous hours) and an orange dot (much higher wet-bulb dangerous hours) joined by an arrow showing the large increase humidity adds.">
+    <figcaption>Each arrow is one neighbourhood: from <span style="color:#2b88c8;font-weight:600">dry-bulb only</span>
+      (air&nbsp;&gt;&nbsp;35&nbsp;°C) to the danger <span style="color:#D55E00;font-weight:600">with humidity</span>
+      (wet-bulb&nbsp;&gt;&nbsp;28&nbsp;°C). The leap is large <em>everywhere</em> — but the order barely moves, so
+      humidity raises the absolute danger without changing who is relatively worst.</figcaption>
   </figure>
   <p class="lede">One lesson we learned the hard way: switching to a humid-heat metric <em>without</em> also
      raising the threshold makes it "dangerous almost always" and destroys the signal — the metric and its

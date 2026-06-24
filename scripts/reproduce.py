@@ -225,15 +225,25 @@ def _figures(P, F, H, I):
     ax.legend(frameon=False); ax.grid(alpha=.25, axis="y")
     fig.savefig(FIGS / "fig4_intervention.png"); plt.close(fig)
 
-    # FIG 5 — humidity (dry-bulb vs wet-bulb)
-    Hs = H.sort_values("WBT28_hrs", ascending=False); x = np.arange(len(Hs)); w = 0.4
-    fig, ax = plt.subplots(figsize=(9, 5))
-    ax.bar(x - w / 2, Hs.dry_hrs, w, label="Dry-bulb danger (T2 > 35 C)", color=SKY)
-    ax.bar(x + w / 2, Hs.WBT28_hrs, w, label="Humid danger (wet-bulb > 28 C)", color=VERM)
-    ax.set_xticks(x); ax.set_xticklabels(Hs.name, rotation=40, ha="right", fontsize=9)
-    ax.set_ylabel("dangerous-heat hours")
-    ax.set_title("Humidity reveals far more danger - and hits every neighbourhood")
-    ax.legend(frameon=False); ax.grid(alpha=.25, axis="y")
+    # FIG 5 — humidity (dumbbell: leap from dry-bulb to wet-bulb danger)
+    Hs = H.sort_values("WBT28_hrs"); yv = np.arange(len(Hs))
+    fig, ax = plt.subplots(figsize=(9.4, 5.8))
+    for yi, (_, r) in zip(yv, Hs.iterrows()):
+        ax.annotate("", xy=(r.WBT28_hrs, yi), xytext=(r.dry_hrs, yi),
+                    arrowprops=dict(arrowstyle="-|>", color="#c8ccd1", lw=2.4, shrinkA=0, shrinkB=0))
+    ax.scatter(Hs.dry_hrs, yv, s=90, color=SKY, edgecolor="k", lw=.6, zorder=3)
+    ax.scatter(Hs.WBT28_hrs, yv, s=110, color=VERM, edgecolor="k", lw=.6, zorder=3)
+    ax.set_yticks(yv); ax.set_yticklabels(Hs.name, fontsize=9.5)
+    ax.set_xlabel("hours of dangerous heat (per hot season)")
+    ax.set_title("Count humidity, and the danger leaps - in every neighbourhood")
+    ax.set_xlim(-8, 300)
+    hd = [Line2D([], [], marker="o", color="w", markerfacecolor=SKY, markeredgecolor="k", markersize=10,
+                 label="Dry-bulb only (air > 35 C)"),
+          Line2D([], [], marker="o", color="w", markerfacecolor=VERM, markeredgecolor="k", markersize=10,
+                 label="With humidity (wet-bulb > 28 C)")]
+    leg = ax.legend(handles=hd, loc="lower right", frameon=True, fontsize=9)
+    leg.get_frame().set_edgecolor("#9aa3ab")
+    ax.grid(alpha=.25, axis="x")
     fig.savefig(FIGS / "fig5_humidity.png"); plt.close(fig)
 
     # FIG 6 — schematic city risk map
