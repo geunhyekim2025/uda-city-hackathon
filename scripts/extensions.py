@@ -209,9 +209,12 @@ def _figures(DN, decomp, dose, band):
     ax.set_xticks(x); ax.set_xticklabels(D2.name, rotation=40, ha="right", fontsize=9)
     ax.set_ylabel("dangerous person-hours per hectare (thousands)")
     ax.set_title("Person-hours of dangerous heat - absolute, transferable (no min-max)")
-    for t, c in TCOL.items():
-        ax.bar([], [], color=c, label=t)
-    ax.legend(frameon=False); ax.grid(alpha=.25, axis="y")
+    from matplotlib.patches import Patch
+    h = [Patch(facecolor=TCOL[t], edgecolor="#333", linewidth=.4, label=t.capitalize())
+         for t in ("refuge", "core", "hotspot")]
+    leg = ax.legend(handles=h, loc="upper right", frameon=True, fontsize=9.5)
+    leg.get_frame().set_edgecolor("#9aa3ab"); leg.get_frame().set_linewidth(1.0)
+    ax.grid(alpha=.25, axis="y")
     fig.savefig(FIGS / "fig9_person_hours.png"); plt.close(fig)
 
     # FIG 10 - intervention decomposition

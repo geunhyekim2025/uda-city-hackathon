@@ -165,8 +165,12 @@ def _figures(opt, B, C, D, slope, intercept, r2):
     ax.set_xticks(x); ax.set_xticklabels(D2.name, rotation=40, ha="right", fontsize=9)
     ax.set_ylabel("vulnerable person-hours per ha (thousands)")
     ax.set_title("Headcount of harm: vulnerable person-hours of dangerous heat")
-    for t,c in TCOL.items(): ax.bar([],[],color=c,label=t)
-    ax.legend(frameon=False); ax.grid(alpha=.25, axis="y")
+    from matplotlib.patches import Patch
+    h = [Patch(facecolor=TCOL[t], edgecolor="#333", linewidth=.4, label=t.capitalize())
+         for t in ("refuge", "core", "hotspot")]
+    leg = ax.legend(handles=h, loc="upper right", frameon=True, fontsize=9.5)
+    leg.get_frame().set_edgecolor("#9aa3ab"); leg.get_frame().set_linewidth(1.0)
+    ax.grid(alpha=.25, axis="y")
     fig.savefig(FIGS/"fig13_vulnerable.png"); plt.close(fig)
 
     # FIG 14 - roughness -> heat regression (leader-line labels; boxed legend)
