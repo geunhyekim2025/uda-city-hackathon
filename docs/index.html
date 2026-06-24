@@ -4,17 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UDA-city — Where is heat most dangerous to people?</title>
+<meta name="description" content="A SUEWS heat-hazard map for ten neighbourhoods of a hot-humid city, bridged honestly to socio-economic heat risk: hottest is not highest-risk, what humidity and +2.5°C change, and a cool-roof + greening intervention.">
+<!-- social share preview -->
+<meta property="og:title" content="Where is heat most dangerous to people? — UDA-city">
+<meta property="og:description" content="Hottest ≠ highest-risk. A SUEWS heat-hazard layer bridged to socio-economic risk, with an honest account of where the bridge holds and breaks.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="figs/fig1_hottest_vs_risk.png">
 <style>
-  :root{--ink:#1d2733;--mut:#5b6b7b;--line:#e3e8ee;--haz:#d1495b;--saf:#2e8b57;--core:#3a6ea5;--accent:#b8860b;--bg:#fbfcfd;}
+  :root{--ink:#1d2733;--mut:#5b6b7b;--line:#e3e8ee;--haz:#D55E00;--saf:#0072B2;--core:#6c757d;
+        --accent:#b8860b;--bg:#fbfcfd;}
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
        color:var(--ink);background:var(--bg);line-height:1.6;}
-  .wrap{max-width:860px;margin:0 auto;padding:0 22px 90px;}
+  .wrap{max-width:880px;margin:0 auto;padding:0 22px 90px;}
   header{background:linear-gradient(135deg,#22303f,#3a5169);color:#fff;padding:54px 22px 46px;}
   header .wrap{padding-bottom:0}
   header .kicker{letter-spacing:.14em;text-transform:uppercase;font-size:.72rem;opacity:.85;margin:0 0 10px}
   header h1{font-size:2.05rem;line-height:1.15;margin:0 0 14px;font-weight:800;}
-  header p{font-size:1.08rem;opacity:.94;margin:0;max-width:680px}
+  header p{font-size:1.08rem;opacity:.94;margin:0;max-width:700px}
+  /* KPI strip */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:-32px auto 0;max-width:880px;
+        padding:0 22px;position:relative;z-index:2}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 14px;
+       box-shadow:0 6px 18px rgba(20,40,60,.06);text-align:center}
+  .kpi b{display:block;font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1.1}
+  .kpi span{display:block;font-size:.78rem;color:var(--mut);margin-top:5px}
   h2{font-size:1.45rem;margin:54px 0 6px;padding-top:14px;border-top:2px solid var(--line);font-weight:800}
   h2 .num{color:var(--accent);font-variant-numeric:tabular-nums}
   h3{font-size:1.08rem;margin:26px 0 4px}
@@ -25,7 +39,8 @@
   .callout{background:#fff;border:1px solid var(--line);border-left:5px solid var(--accent);
            border-radius:10px;padding:18px 20px;margin:22px 0;}
   .callout.big{border-left-color:var(--haz)}
-  .callout strong{color:var(--ink)}
+  .callout.tldr{border-left-color:var(--saf);background:#f3f8fc}
+  .callout.policy{border-left-color:var(--accent);background:#fffdf5}
   table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem;background:#fff;
         border:1px solid var(--line);border-radius:10px;overflow:hidden}
   th,td{padding:9px 11px;text-align:right;border-bottom:1px solid var(--line)}
@@ -34,17 +49,20 @@
   tbody tr:last-child td{border-bottom:none}
   .tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;color:#fff}
   .t-refuge{background:var(--saf)} .t-core{background:var(--core)} .t-hotspot{background:var(--haz)}
-  .hi{background:#fff5f5}
+  .hi{background:#fff4ec}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
   .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
-  .card h4{margin:0 0 6px;font-size:1rem}
   .holds{border-left:5px solid var(--saf)} .breaks{border-left:5px solid var(--haz)}
   .holds h4{color:var(--saf)} .breaks h4{color:var(--haz)}
+  .card h4{margin:0 0 6px;font-size:1rem}
   ul{margin:8px 0 0;padding-left:20px} li{margin:6px 0}
   .stat{font-variant-numeric:tabular-nums}
+  .methods{font-size:.9rem}
+  .methods code{background:#eef2f6;padding:1px 6px;border-radius:5px}
+  .methods a{color:var(--saf)}
   footer{color:var(--mut);font-size:.82rem;border-top:1px solid var(--line);margin-top:50px;padding-top:18px}
   code{background:#eef2f6;padding:1px 6px;border-radius:5px;font-size:.86em}
-  @media(max-width:640px){.grid2{grid-template-columns:1fr}header h1{font-size:1.6rem}}
+  @media(max-width:680px){.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}header h1{font-size:1.6rem}}
 </style>
 </head>
 <body>
@@ -58,36 +76,58 @@
   </div>
 </header>
 
+<!-- KPI strip -->
+<div class="kpis">
+  <div class="kpi"><b>10</b><span>neighbourhoods modelled with SUEWS</span></div>
+  <div class="kpi"><b>≠</b><span>hottest place is <em>not</em> highest-risk</span></div>
+  <div class="kpi"><b>×7.7</b><span>more dangerous heat under +2.5&nbsp;°C</span></div>
+  <div class="kpi"><b>−73%</b><span>dangerous hours cut by cool roofs&nbsp;+&nbsp;greening</span></div>
+</div>
+
 <div class="wrap">
 
-  <div class="callout big">
-    <strong>The one-line finding.</strong> The <em>hottest</em> neighbourhood is <strong>not</strong> the
-    one where heat is most dangerous to people. <strong>Jade Gardens</strong> — a leafy, low-rise
-    periphery — runs the hottest air of all ten, yet sits at the <em>bottom</em> of the risk ranking.
-    The highest risk is <strong>Kampong Lama</strong>, a dense informal settlement that is only the
-    <em>third</em>-hottest. Heat is a hazard; <em>risk</em> is what that hazard does to exposed,
-    vulnerable people — and the two point in opposite directions here.
+  <div class="callout tldr">
+    <strong>In two sentences.</strong> In this hot-humid city, the <em>hottest</em> air is in the leafy,
+    near-empty periphery — but the <em>danger to people</em> is concentrated in three dense informal
+    settlements where many vulnerable residents have little defence against the heat. A warmer future
+    makes the same places far more dangerous, and low-cost cool-roof + greening measures meaningfully
+    help — but only if we judge them by real heat avoided, not by a relative score.
   </div>
+
+  <div class="callout big">
+    <strong>The headline finding.</strong> <strong>Jade Gardens</strong> — a low-rise green periphery —
+    runs the hottest air of all ten, yet sits at the <em>bottom</em> of the risk ranking. The highest
+    risk is <strong>Kampong Lama</strong>, a dense informal settlement that is only the
+    <em>third</em>-hottest. Heat is a hazard; <em>risk</em> is what that hazard does to exposed,
+    vulnerable people — and here the two point in opposite directions.
+  </div>
+
+  <h3>The city at a glance</h3>
+  <figure>
+    <img src="figs/fig6_map.png" alt="Schematic map of the ten UDA-city neighbourhoods grouped by type and shaded by heat-risk index; hotspots are brightest (highest risk), refuges and most cores are darkest (lowest risk).">
+    <figcaption>Each tile is a neighbourhood, shaded by its heat-<strong>risk</strong> index (bright = high
+      risk). The four dense <em>hotspot</em> settlements carry almost all of the people-risk; the hottest
+      place of all, Jade Gardens (☀), sits at zero risk because almost nobody lives there.</figcaption>
+  </figure>
 
   <!-- 1 -->
   <h2><span class="num">1.</span>&nbsp; Hottest ≠ highest-risk</h2>
   <p class="lede">Hazard and risk are different questions. One is about the air; the other is about the people in it.</p>
   <figure>
-    <img src="figs/fig1_hottest_vs_risk.png" alt="Scatter of dangerous-heat hours versus risk index for the ten neighbourhoods">
-    <figcaption>Each dot is a neighbourhood. Horizontal = how hot (hours above 35&nbsp;°C). Vertical = how
-      dangerous to people (risk index). The hottest place (Jade Gardens, far right) is at the floor of risk;
-      the highest-risk place (Kampong Lama, top) is only mid-pack on heat.</figcaption>
+    <img src="figs/fig1_hottest_vs_risk.png" alt="Scatter of dangerous-heat hours versus risk index for the ten neighbourhoods, showing the hottest neighbourhood at the bottom of risk and the highest-risk neighbourhood only mid-range on heat.">
+    <figcaption>Horizontal = how hot (hours above 35&nbsp;°C). Vertical = how dangerous to people (risk index).
+      The hottest place (Jade Gardens, far right) is at the floor of risk; the highest-risk place
+      (Kampong Lama, top) is only mid-pack on heat.</figcaption>
   </figure>
   <p><strong>Why the divergence?</strong> It comes down to urban form:</p>
   <ul>
     <li><strong>Why Jade Gardens is hottest:</strong> it is smooth and low-rise. Aerodynamically smooth
       surfaces mix the air weakly, so daytime heat builds up near the ground — but <strong>almost nobody
-      lives there</strong> (80 people per hectare, the lowest), and those who do have more air-conditioning
-      and less deprivation. High hazard, near-zero exposure → low risk.</li>
-    <li><strong>Why Kampong Lama is highest-risk:</strong> it is a dense informal settlement — still
-      genuinely hot, but packed with <strong>300 people per hectare</strong>, with only <strong>8% air-
-      conditioning access</strong>, 62% outdoor workers, and high deprivation. High on all three pillars
-      of risk at once.</li>
+      lives there</strong> (80 people per hectare, the lowest), with more air-conditioning and less
+      deprivation. High hazard, near-zero exposure → low risk.</li>
+    <li><strong>Why Kampong Lama is highest-risk:</strong> a dense informal settlement — still genuinely
+      hot, but packed with <strong>300 people per hectare</strong>, only <strong>8% air-conditioning
+      access</strong>, 62% outdoor workers and high deprivation. High on all three pillars of risk at once.</li>
   </ul>
 
   <!-- 2 -->
@@ -95,9 +135,9 @@
   <p class="lede">Risk = Hazard × Exposure × Vulnerability, each scored 0–1 across the ten neighbourhoods and
      combined as a (deliberately cautious) geometric mean — a near-zero in any one pillar pulls risk down.</p>
   <figure>
-    <img src="figs/fig2_pillars.png" alt="Bar chart of hazard, exposure and vulnerability pillars per neighbourhood">
-    <figcaption>The three pillars. Kampong Lama (top) scores high on all three; Jade Gardens has high hazard
-      but its exposure bar is zero, which collapses its risk.</figcaption>
+    <img src="figs/fig2_pillars.png" alt="Horizontal bar chart of hazard, exposure and vulnerability pillar scores per neighbourhood.">
+    <figcaption>The three pillars. Kampong Lama (top) scores high on all three; Jade Gardens has high
+      hazard but its exposure bar is zero, which collapses its risk.</figcaption>
   </figure>
   <table>
     <thead><tr><th>Rank</th><th>Neighbourhood</th><th>Type</th><th>Danger hrs<br>(T2&gt;35°C)</th>
@@ -124,95 +164,126 @@
 
   <h3>Humidity makes everywhere more dangerous — but doesn't change who's worst</h3>
   <p>A dry-bulb 35&nbsp;°C threshold understates danger in a city at ~81% humidity. Re-scoring the hazard with
-     humid-heat measures (apparent temperature and wet-bulb) shows <strong>every neighbourhood endures
-     90–265 hours of dangerous humid heat</strong> (wet-bulb above 28&nbsp;°C) — far more alarming in absolute
-     terms. But because humidity is near-uniform across the city, it lifts everyone together: <strong>the risk
-     ranking does not change.</strong> One caution we learned the hard way — switching to apparent temperature
-     <em>without</em> also raising the threshold makes it "dangerous almost always" and destroys the signal;
-     the metric and its threshold must move together.</p>
+     a humid-heat measure (wet-bulb temperature) shows <strong>every neighbourhood endures 90–265 hours of
+     dangerous humid heat</strong> — far more than the dry-bulb count suggests.</p>
+  <figure>
+    <img src="figs/fig5_humidity.png" alt="Grouped bars comparing dry-bulb dangerous hours with the much larger wet-bulb dangerous hours for every neighbourhood.">
+    <figcaption>Counting humid heat (wet-bulb &gt; 28&nbsp;°C, orange) reveals far more dangerous hours than
+      dry-bulb alone (blue) — in <em>every</em> neighbourhood. Humidity raises the danger everywhere
+      together, so the <em>ranking</em> is unchanged; the absolute danger is much higher.</figcaption>
+  </figure>
+  <p class="lede">One lesson we learned the hard way: switching to a humid-heat metric <em>without</em> also
+     raising the threshold makes it "dangerous almost always" and destroys the signal — the metric and its
+     threshold must move together.</p>
 
   <h3>+2.5&nbsp;°C warming multiplies the hazard ~8-fold</h3>
   <figure>
-    <img src="figs/fig3_future.png" alt="Present versus future dangerous-heat hours by neighbourhood">
+    <img src="figs/fig3_future.png" alt="Present versus future dangerous-heat hours by neighbourhood, future bars far taller.">
     <figcaption>Dangerous-heat hours, present vs a +2.5&nbsp;°C hotter future. City-wide the total rises from
       242 to 1,861 hours (×7.7). The ordering barely moves — warming hits everywhere.</figcaption>
   </figure>
-  <p>Under the warmer future the people-risk <strong>ranking is stable</strong> (only a minor 2↔3 swap), because
-     uniform warming raises hazard everywhere while exposure and vulnerability are unchanged. The message is not
-     "the map reshuffles" — it's "the <em>same</em> places get far more dangerous, and the highest-risk
-     settlements stay highest-risk."</p>
+  <p>Under the warmer future the people-risk <strong>ranking is stable</strong> (only a minor 2↔3 swap),
+     because uniform warming raises hazard everywhere while exposure and vulnerability are unchanged. The
+     message is not "the map reshuffles" — it's "the <em>same</em> places get far more dangerous, and the
+     highest-risk settlements stay highest-risk."</p>
 
   <!-- 4 -->
   <h2><span class="num">4.</span>&nbsp; A targeted intervention: cool roofs + street greening</h2>
   <p class="lede">We tested one concrete action on the three highest-risk settlements: brighten the roofs and
      pavements (reflect more sun) and convert some paved/bare ground to grass and trees (add evaporative cooling).</p>
   <figure>
-    <img src="figs/fig4_intervention.png" alt="Dangerous-heat hours before and after the intervention for the three treated neighbourhoods">
+    <img src="figs/fig4_intervention.png" alt="Dangerous-heat hours before and after the intervention for the three treated neighbourhoods, with reductions of 60 to 73 percent.">
     <figcaption>Cool roofs + greening cut dangerous-heat hours by 60–73% in the three treated settlements.</figcaption>
   </figure>
-  <p><strong>It works on the physics.</strong> Reflective surfaces cut the absorbed sunlight, greening adds
-     evaporative cooling, and together the <em>sensible heating of the air falls by about a quarter</em> — which
-     is what cools the street. Dangerous-heat hours drop <span class="stat">42→17</span> (Kampong Lama, −60%),
-     <span class="stat">26→9</span> (Dhobi Lines, −65%) and <span class="stat">22→6</span> (Fuzhou Lanes, −73%).</p>
+  <p><strong>It works on the physics.</strong> Reflective surfaces cut absorbed sunlight, greening adds
+     evaporative cooling, and together the <em>sensible heating of the air falls by about a quarter</em> —
+     which is what cools the street. Dangerous-heat hours drop <span class="stat">42→17</span>
+     (Kampong Lama, −60%), <span class="stat">26→9</span> (Dhobi Lines, −65%) and
+     <span class="stat">22→6</span> (Fuzhou Lanes, −73%).</p>
   <div class="callout">
-    <strong>A scoring caution worth shouting about.</strong> The <em>relative</em> risk index barely moves after
-    this intervention — Kampong Lama stays pinned at 1.00 — even though its real danger fell by 60%. That is an
-    artefact of scoring everything <em>relative</em> to the worst neighbourhood: improving the worst case simply
-    re-baselines the scale. <strong>Judge interventions by the absolute hazard (hours of dangerous heat avoided),
-    not by a relative index that is designed to always keep someone at 1.0.</strong>
+    <strong>A scoring caution worth shouting about.</strong> The <em>relative</em> risk index barely moves
+    after this intervention — Kampong Lama stays pinned at 1.00 — even though its real danger fell 60%. That
+    is an artefact of scoring everything <em>relative</em> to the worst neighbourhood: improving the worst
+    case simply re-baselines the scale. <strong>Judge interventions by the absolute hazard (hours of
+    dangerous heat avoided), not by a relative index designed to always keep someone at 1.0.</strong>
   </div>
 
   <!-- 5 -->
   <h2><span class="num">5.</span>&nbsp; Where this bridge holds — and where it breaks</h2>
-  <p class="lede">The honest part. This pipeline is a decision aid, not an oracle. Here is where to trust it and
-     where not to.</p>
+  <p class="lede">The honest part. This pipeline is a decision aid, not an oracle.</p>
   <div class="grid2">
     <div class="card holds">
       <h4>✓ Where it holds</h4>
       <ul>
-        <li><strong>The headline is robust.</strong> Hottest ≠ highest-risk survives every humid-heat metric and
-          the +2.5&nbsp;°C future — it is a structural feature of the city, not an artefact of one threshold.</li>
+        <li><strong>The headline is robust.</strong> Hottest ≠ highest-risk survives every humid-heat metric
+          and the +2.5&nbsp;°C future — a structural feature of the city, not an artefact of one threshold.</li>
         <li><strong>Relative ranking of the hotspots</strong> is stable and physically explainable (form →
           mixing → heat; density + low coping → risk).</li>
         <li><strong>The physics of the intervention</strong> is sound and traceable to the surface energy
           balance (less absorbed sun, more evaporation, less sensible heat).</li>
-        <li><strong>Direction of travel</strong> — who to prioritise, and that warming worsens the same places —
-          is trustworthy.</li>
+        <li><strong>Direction of travel</strong> — who to prioritise, and that warming worsens the same
+          places — is trustworthy.</li>
       </ul>
     </div>
     <div class="card breaks">
       <h4>✗ Where it breaks</h4>
       <ul>
-        <li><strong>It is an environmental hazard, not a health outcome.</strong> Hours above a temperature are
-          a proxy for danger, not a prediction of illness or death.</li>
-        <li><strong>The socio-economic layer is synthetic.</strong> Read <em>ranks</em>, never absolute numbers;
-          these are plausible magnitudes, not survey data for a real place.</li>
+        <li><strong>It is an environmental hazard, not a health outcome.</strong> Hours above a temperature
+          are a proxy for danger, not a prediction of illness or death.</li>
+        <li><strong>The socio-economic layer is synthetic.</strong> Read <em>ranks</em>, never absolute
+          numbers; these are plausible magnitudes, not survey data for a real place.</li>
         <li><strong>Relative (min–max) scaling doesn't transfer</strong> and hides progress — it inflates the
-          apparent risk of untouched areas when the worst case improves, and pins sparsely-populated places at
-          zero risk no matter how hot they get.</li>
+          apparent risk of untouched areas when the worst case improves, and pins sparsely-populated places
+          at zero risk no matter how hot they get.</li>
         <li><strong>District averages hide individuals</strong> — the most exposed people inside a "low-risk"
           area are invisible here.</li>
-        <li><strong>The future is a pseudo-warming stress test</strong>, not a downscaled climate projection;
-          and the greening benefit assumes the vegetation is <em>kept watered</em>.</li>
-        <li><strong>A dry-bulb threshold is the wrong default for a humid city</strong> — use a humid-heat
-          measure, and move the threshold with the metric.</li>
+        <li><strong>The future is a pseudo-warming stress test</strong>, not a downscaled projection; and the
+          greening benefit assumes the vegetation is <em>kept watered</em>.</li>
       </ul>
     </div>
   </div>
-  <div class="callout">
-    <strong>Bottom line for a decision-maker.</strong> Use this to <em>prioritise</em> — the dense informal
-    settlements (Kampong Lama, Dhobi Lines, Fuzhou Lanes) are where heat meets vulnerable, exposed people, and
-    cool-roof + greening measurably helps there. Do <em>not</em> use the index as an absolute safety score, do
-    not let a "0" risk for a sparsely-populated area read as "safe," and track success in <em>hours of dangerous
-    heat avoided</em>, not in a relative number.
+
+  <!-- Policy -->
+  <h2><span class="num">6.</span>&nbsp; So what should a city do?</h2>
+  <div class="callout policy">
+    <ul style="margin-top:0">
+      <li><strong>Target the three informal settlements first.</strong> Kampong Lama, Dhobi Lines and Fuzhou
+        Lanes are where dangerous heat meets dense, vulnerable, under-protected populations — they hold
+        essentially all of the people-risk.</li>
+      <li><strong>Deploy cool roofs + street greening there.</strong> A low-cost, proven lever: 60–73% fewer
+        dangerous-heat hours in our runs, working through reflected sunlight and evaporative cooling.</li>
+      <li><strong>Plan for the future now.</strong> +2.5&nbsp;°C multiplies dangerous heat ~8-fold in the
+        <em>same</em> places — adaptation is not optional.</li>
+      <li><strong>Measure success in heat avoided, not in a relative score</strong>, and never read a "0"
+        risk for a sparsely-populated area as "safe."</li>
+    </ul>
+  </div>
+
+  <!-- Methods -->
+  <h2><span class="num">7.</span>&nbsp; Methods &amp; reproducibility</h2>
+  <div class="callout methods">
+    <ul style="margin-top:0">
+      <li><strong>Model:</strong> SUEWS via <code>supy 2026.6.5</code> — NARP net radiation + classic OHM
+        storage heat (single-layer, laptop-runnable); 10 grids, present hot-humid forcing.</li>
+      <li><strong>Hazard:</strong> dangerous-heat hours = hours with hourly-mean 2&nbsp;m air temperature
+        (<code>T2</code>) above <code>35&nbsp;°C</code>, after a <code>14-day</code> spin-up. Humid variant:
+        wet-bulb (Stull 2011) above 28&nbsp;°C from the model's own <code>T2</code>+<code>RH2</code>.</li>
+      <li><strong>Risk:</strong> UNDRR-style <code>hazard × exposure × vulnerability</code>, each min–max
+        scaled to 0–1 and combined as a geometric mean (per <code>risk_bridge.py</code>).</li>
+      <li><strong>Intervention:</strong> roof albedo 0.20→0.60, pavement 0.20→0.40; grass +0.10 and trees
+        +0.07 of land cover (from paved/bare), on gridiv 4/5/9 only. Config validated before running.</li>
+      <li><strong>Source &amp; data:</strong> config <code>uda-city.yml</code>, bridge
+        <code>risk_bridge.py</code> / caveats <code>risk_bridge.md</code>, scenario
+        <code>uda-city-intervention.yml</code> — all in this repository. UDA-city is
+        <strong>synthetic</strong> (realistic structure, not a real place); the socio-economic layer is
+        synthetic — read ranks, not absolute values.</li>
+    </ul>
   </div>
 
   <footer>
     Modelled with <strong>SUEWS</strong> (Surface Urban Energy &amp; Water Balance Scheme) via <code>supy</code>
-    2026.6.5 — NARP radiation + classic OHM storage heat. UDA-city is a <strong>synthetic</strong> hackathon
-    dataset (realistic climate &amp; city structure, not a real place); the socio-economic layer is synthetic.
-    Risk decomposition follows the UNDRR hazard × exposure × vulnerability framing; see <code>risk_bridge.md</code>
-    for assumptions and caveats.<br><br>
+    2026.6.5. Figures are colour-blind-safe (Okabe–Ito / cividis). Risk decomposition follows the UNDRR
+    hazard × exposure × vulnerability framing; see <code>risk_bridge.md</code> for full assumptions.<br><br>
     Please cite SUEWS: Järvi, Grimmond &amp; Christen (2011), <em>J. Hydrology</em> 411, 219–237; and
     Ward, Kotthaus, Järvi &amp; Grimmond (2016), <em>Urban Climate</em> 18, 1–32.
   </footer>
