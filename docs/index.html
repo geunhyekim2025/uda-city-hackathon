@@ -83,8 +83,13 @@
   .fw-exp{border-color:#009E73} .fw-exp .fw-t{color:#009E73}
   .fw-vul{border-color:var(--saf)} .fw-vul .fw-t{color:var(--saf)}
   .fw-risk{background:#22303f;border-color:#22303f} .fw-risk .fw-t{color:#fff} .fw-risk .fw-s{color:#cdd7e0}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0 4px}
+  .act{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px 17px;display:flex;gap:13px;align-items:flex-start}
+  .act .ic{font-size:1.6rem;line-height:1.1;flex:0 0 auto}
+  .act h4{margin:0 0 4px;font-size:.98rem} .act p{margin:0;font-size:.88rem;color:var(--ink)}
+  .act.full{grid-column:1 / -1;border-left:5px solid var(--accent)}
   @media(max-width:680px){.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}
-    .kpis.sec{grid-template-columns:1fr}header h1{font-size:1.6rem}
+    .kpis.sec{grid-template-columns:1fr}.actions{grid-template-columns:1fr}header h1{font-size:1.6rem}
     table{display:block;overflow-x:auto;white-space:nowrap}
     .framework{flex-direction:column;align-items:stretch}.fw-card{max-width:none}.fw-op{transform:rotate(90deg)}}
 </style>
@@ -418,25 +423,65 @@
     <div class="kpi"><b>cool roofs first</b><span>reflective surfaces do 69–82% of the cooling; trees for shade</span></div>
     <div class="kpi"><b>adapt + mitigate</b><span>local action offsets only 36–43% of +2.5&nbsp;°C</span></div>
   </div>
-  <div class="callout policy">
-    <ul style="margin-top:0">
-      <li><strong>Target the three informal settlements first.</strong> Kampong Lama, Dhobi Lines and Fuzhou
-        Lanes carry almost all the <em>vulnerable</em> person-hours of dangerous heat — Kampong Lama alone
-        ~<strong>6,400 per hectare</strong> versus under 1,500 in the hot-but-empty refuges. That is where heat
-        meets dense, under-protected people.</li>
-      <li><strong>Lead with cool roofs and cool pavements.</strong> Our lever-by-lever test shows reflective
-        surfaces deliver <strong>69–82%</strong> of the cooling on their own; add street trees for
-        <em>shade and comfort</em>, not as the air-temperature lever (here greening alone did not cool the air).</li>
-      <li><strong>Match the intervention to the clock.</strong> Dangerous heat is a <em>daytime</em> problem,
-        but the people present shift: cores fill with commuters by day, while the informal settlements hold
-        their vulnerable residents around the clock — so daytime shade/water/work-pauses and nighttime cooling
-        refuges serve different populations.</li>
-      <li><strong>Plan for the future now.</strong> +2.5&nbsp;°C lifts the <em>whole city above today's worst
-        case</em> (the coolest future neighbourhood, 77&nbsp;h, exceeds today's hottest, 62&nbsp;h), and local
-        measures offset only 36–43% of it — so <strong>adapt <em>and</em> mitigate</strong>.</li>
-      <li><strong>Measure success in heat avoided (absolute person-hours), not a relative score</strong>, and
-        never read a "0" risk for a sparsely-populated area as "safe."</li>
-    </ul>
+  <div class="actions">
+    <div class="act full"><div class="ic">🏠</div><div style="width:100%">
+      <h4>Lead with cool roofs and cool pavements</h4>
+      <p>Our lever-by-lever test shows reflective surfaces deliver <strong>69–82%</strong> of the cooling on
+      their own; add street trees for <em>shade and comfort</em>, not as the air-temperature lever (here greening
+      alone did not cool the air). <strong>How it works:</strong></p>
+      <div style="text-align:center">
+      <svg viewBox="0 0 600 188" style="width:100%;max-width:560px;height:auto;margin-top:6px" role="img"
+           aria-label="A dark roof absorbs sunlight and heats the building; a reflective cool roof bounces sunlight back and stays cooler.">
+        <defs>
+          <marker id="mo" markerWidth="9" markerHeight="9" refX="6.4" refY="3" orient="auto"><path d="M0,0 L6.4,3 L0,6 Z" fill="#E69F00"/></marker>
+          <marker id="mb" markerWidth="9" markerHeight="9" refX="6.4" refY="3" orient="auto"><path d="M0,0 L6.4,3 L0,6 Z" fill="#3a6ea5"/></marker>
+          <marker id="mr" markerWidth="9" markerHeight="9" refX="6.4" refY="3" orient="auto"><path d="M0,0 L6.4,3 L0,6 Z" fill="#d1495b"/></marker>
+        </defs>
+        <circle cx="58" cy="32" r="13" fill="#E69F00"/>
+        <g stroke="#E69F00" stroke-width="2"><line x1="58" y1="11" x2="58" y2="4"/><line x1="36" y1="32" x2="29" y2="32"/><line x1="43" y1="17" x2="38" y2="12"/></g>
+        <line x1="86" y1="40" x2="118" y2="86" stroke="#E69F00" stroke-width="2.4" marker-end="url(#mo)"/>
+        <line x1="114" y1="38" x2="150" y2="86" stroke="#E69F00" stroke-width="2.4" marker-end="url(#mo)"/>
+        <line x1="142" y1="42" x2="182" y2="86" stroke="#E69F00" stroke-width="2.4" marker-end="url(#mo)"/>
+        <rect x="70" y="90" width="160" height="18" rx="4" fill="#2b3a48"/>
+        <rect x="86" y="108" width="128" height="40" fill="#f3d9cf" stroke="#d8b0a0"/>
+        <line x1="125" y1="111" x2="125" y2="143" stroke="#d1495b" stroke-width="2.2" marker-end="url(#mr)"/>
+        <line x1="175" y1="111" x2="175" y2="143" stroke="#d1495b" stroke-width="2.2" marker-end="url(#mr)"/>
+        <text x="150" y="172" text-anchor="middle" font-size="12.5" fill="#1d2733"><tspan font-weight="700">Dark roof</tspan> — soaks up the sun, building heats</text>
+        <line x1="300" y1="12" x2="300" y2="158" stroke="#e3e8ee" stroke-width="1.5"/>
+        <circle cx="358" cy="32" r="13" fill="#E69F00"/>
+        <g stroke="#E69F00" stroke-width="2"><line x1="358" y1="11" x2="358" y2="4"/><line x1="336" y1="32" x2="329" y2="32"/><line x1="343" y1="17" x2="338" y2="12"/></g>
+        <line x1="392" y1="40" x2="420" y2="86" stroke="#E69F00" stroke-width="2.4" marker-end="url(#mo)"/>
+        <line x1="418" y1="38" x2="448" y2="86" stroke="#E69F00" stroke-width="2.4" marker-end="url(#mo)"/>
+        <rect x="370" y="90" width="160" height="18" rx="4" fill="#ffffff" stroke="#6c757d"/>
+        <rect x="386" y="108" width="128" height="40" fill="#e3eef5" stroke="#b9d2e2"/>
+        <line x1="450" y1="88" x2="480" y2="46" stroke="#3a6ea5" stroke-width="2.4" marker-end="url(#mb)"/>
+        <line x1="480" y1="88" x2="512" y2="50" stroke="#3a6ea5" stroke-width="2.4" marker-end="url(#mb)"/>
+        <text x="450" y="172" text-anchor="middle" font-size="12.5" fill="#1d2733"><tspan font-weight="700">Cool roof</tspan> — bounces the sun back, stays cooler</text>
+      </svg></div>
+    </div></div>
+
+    <div class="act"><div class="ic">🎯</div><div>
+      <h4>Target the three informal settlements first</h4>
+      <p>Kampong Lama, Dhobi Lines and Fuzhou Lanes carry almost all the <em>vulnerable</em> person-hours of
+      dangerous heat — Kampong Lama alone ~<strong>6,400 per hectare</strong> vs under 1,500 in the hot-but-empty
+      refuges. That is where heat meets dense, under-protected people.</p></div></div>
+
+    <div class="act"><div class="ic">🕑</div><div>
+      <h4>Match the intervention to the clock</h4>
+      <p>Dangerous heat is a <em>daytime</em> problem, but who is present shifts: cores fill with commuters by
+      day; the informal settlements hold their vulnerable residents around the clock. Daytime shade/water and
+      nighttime cooling refuges serve different people.</p></div></div>
+
+    <div class="act"><div class="ic">📈</div><div>
+      <h4>Plan for the future now</h4>
+      <p>+2.5&nbsp;°C lifts the <em>whole city above today's worst case</em> (the coolest future neighbourhood,
+      77&nbsp;h, beats today's hottest, 62&nbsp;h), and local measures offset only 36–43% — so
+      <strong>adapt <em>and</em> mitigate</strong>.</p></div></div>
+
+    <div class="act"><div class="ic">📏</div><div>
+      <h4>Measure success in heat avoided</h4>
+      <p>Track <strong>absolute person-hours</strong> of dangerous heat avoided, not a relative score — and
+      never read a "0" risk for a sparsely-populated area as "safe."</p></div></div>
   </div>
 
   <!-- Methods -->
